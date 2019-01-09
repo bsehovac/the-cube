@@ -1,0 +1,104 @@
+.ui
+  pointer-events: none
+  color: #070d15
+
+  &,
+  &__background,
+  &__game,
+  &__texts,
+  &__prefs,
+  &__stats,
+  &__buttons
+    @include fullscreen
+    overflow: hidden
+
+  &__background
+    z-index: 1
+    transition: background 500ms ease
+    background: #d1d5db
+
+    &:after
+      @include fullscreen
+      content: ''
+      background-image: linear-gradient(to bottom, rgba(#fff, 1) 50%, rgba(#fff, 0) 100%)
+
+  &__game
+    pointer-events: all
+    z-index: 2
+
+    canvas
+      display: block
+      width: 100%
+      height: 100%
+      // image-rendering: optimizeSpeed
+      // image-rendering: -moz-crisp-edges
+      // image-rendering: -webkit-optimize-contrast
+      // image-rendering: -o-crisp-edges
+      // image-rendering: pixelated
+
+  &__texts
+    z-index: 3
+
+  &__prefs,
+  &__stats
+    display: flex
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+    overflow: hidden
+    z-index: 4
+
+  &__buttons
+    z-index: 5
+
+  &__notification
+    transition: transform 500ms ease, opacity 500ms ease
+    font-family: sans-serif
+    position: absolute
+    left: 50%
+    bottom: 0.6em
+    padding: 0.6em
+    margin-left: -9.4em
+    width: 18.8em
+    z-index: 6
+    background: rgba(#111, 0.9)
+    border-radius: 0.8em
+    display: flex
+    align-items: center
+    flex-flow: row nowrap
+    color: #fff
+    user-select: none
+    opacity: 0
+    pointer-events: none
+    transform: translateY(100%)
+
+    &.is-active
+      opacity: 1
+      pointer-events: all
+      transform: none
+
+    *
+      text-transform: none
+
+    &-icon
+      background-size: 100% 100%
+      left: 0.6em
+      top: 0.6em
+      width: 2.8em
+      height: 2.8em
+      border-radius: 0.5em
+      background: #fff
+      margin-right: 0.6em
+      display: block
+
+    &-text
+      font-size: 0.75em
+      line-height: 1.4em
+
+      .icon
+        color: #4f82fd
+        font-size: 1.1em
+
+      b
+        font-weight: 700
+
