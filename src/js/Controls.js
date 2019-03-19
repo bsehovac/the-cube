@@ -3,7 +3,7 @@ import { Draggable } from './Draggable.js';
 
 const STILL = 0;
 const PREPARING = 1;
-const ROTATING = 2
+const ROTATING = 2;
 const ANIMATING = 3;
 
 class Controls {
@@ -46,6 +46,7 @@ class Controls {
 
     this.scramble = null;
     this.state = STILL;
+    this.enabled = false;
 
     this.initDraggable();
     // this.generateSolvedStates();
@@ -55,12 +56,14 @@ class Controls {
   enable() {
 
     this.draggable.enable();
+    this.enabled = true;
 
   }
 
   disable() {
 
     this.draggable.disable();
+    this.enabled = false;
 
   }
 
@@ -382,6 +385,44 @@ class Controls {
       .multiplyScalar( 3 );
 
     return this.game.cube.object.worldToLocal( position.sub( this.game.cube.animator.position ) ).round();
+
+  }
+
+  keyboardMove( type, move, callback ) {
+
+    if ( this.state !== STILL ) return;
+    if ( this.enabled !== true ) return;
+
+    if ( type === 'LAYER' ) {
+
+      const layer = this.getLayer( move.position );
+
+      this.flipAxis = new THREE.Vector3();
+      this.flipAxis[ move.axis ] = 1;
+      this.state = ROTATING;
+
+      this.selectLayer( layer );
+      this.rotateLayer( move.angle, false, layer => {
+
+        this.game.storage.saveGame();
+        this.state = STILL;
+        this.checkIsSolved();
+
+      } );
+
+    } else if ( type === 'CUBE' ) {
+
+      this.flipAxis = new THREE.Vector3();
+      this.flipAxis[ move.axis ] = 1;
+      this.state = ROTATING;
+
+      this.rotateCube( move.angle, () => {
+
+        this.state = STILL;
+
+      } );
+
+    }
 
   }
 

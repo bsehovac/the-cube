@@ -51,23 +51,30 @@ class Scrambler {
 
 		this.moves.forEach( move => {
 
-			const face = move.charAt( 0 );
+			const convertedMove = this.convertMove( move );
 			const modifier = move.charAt( 1 );
-
-			const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
-			const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
-
-			const position = new THREE.Vector3();
-			position[ { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ] ] = row;
-
-			const angle = ( Math.PI / 2 ) * - row * ( ( modifier == "'" ) ? - 1 : 1 );
-
-			const convertedMove = { position, axis, angle, name: move };
 
 			this.converted.push( convertedMove );
 			if ( modifier == "2" ) this.converted.push( convertedMove );
 
 		} );
+
+	}
+
+	convertMove( move ) {
+
+		const face = move.charAt( 0 );
+		const modifier = move.charAt( 1 );
+
+		const axis = { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ];
+		const row = { D: -1, U: 1, L: -1, R: 1, F: 1, B: -1 }[ face ];
+
+		const position = new THREE.Vector3();
+		position[ { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face ] ] = row;
+
+		const angle = ( Math.PI / 2 ) * - row * ( ( modifier == "'" ) ? - 1 : 1 );
+
+		return { position, axis, angle, name: move };
 
 	}
 

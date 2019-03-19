@@ -1,6 +1,7 @@
 import { World } from './World.js';
 import { Cube } from './Cube.js';
 import { Controls } from './Controls.js';
+import { Keyboard } from './Keyboard.js';
 import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
@@ -51,6 +52,7 @@ class Game {
 
     this.world = new World( this );
     this.cube = new Cube( this );
+    this.keyboard = new Keyboard( this );
     this.controls = new Controls( this );
     this.scrambler = new Scrambler( this );
     this.transition = new Transition( this );
