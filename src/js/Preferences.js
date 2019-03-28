@@ -18,6 +18,24 @@ class Preferences {
 
     this.ranges = {
 
+      size: new Range( 'size', {
+        value: this.game.cube.size,
+        range: [ 2, 5 ],
+        step: 1,
+        onUpdate: value => {
+
+          this.game.cube.size = value;
+
+          this.game.preferences.ranges.scramble.list.forEach( ( item, i ) => {
+
+            item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
+
+          } );
+
+        },
+        onComplete: () => this.game.storage.savePreferences(),
+      } ),
+
       flip: new Range( 'flip', {
         value: this.game.controls.flipConfig,
         range: [ 0, 2 ],
@@ -31,12 +49,12 @@ class Preferences {
       } ),
 
       scramble: new Range( 'scramble', {
-        value: this.game.scrambler.scrambleLength,
-        range: [ 20, 30 ],
-        step: 5,
+        value: this.game.scrambler.dificulty,
+        range: [ 0, 2 ],
+        step: 1,
         onUpdate: value => {
 
-          this.game.scrambler.scrambleLength = value;
+          this.game.scrambler.dificulty = value;
 
         },
         onComplete: () => this.game.storage.savePreferences()
@@ -68,6 +86,12 @@ class Preferences {
       } ),
 
     };
+
+    this.ranges.scramble.list.forEach( ( item, i ) => {
+
+      item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
+
+    } );
     
   }
 

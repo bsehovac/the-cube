@@ -10,6 +10,7 @@ class Storage {
 
       this.clearGame();
       this.clearPreferences();
+      this.migrateScores();
       localStorage.setItem( 'theCube_version', window.gameVersion );
 
     }
@@ -18,13 +19,10 @@ class Storage {
 
   init() {
 
-    this.loadGame();
-    this.loadScores();
     this.loadPreferences();
+    this.loadScores();
 
   }
-
-  // GAME
 
   loadGame() {
 
@@ -37,7 +35,8 @@ class Storage {
       const gameCubeData = JSON.parse( localStorage.getItem( 'theCube_savedState' ) );
       const gameTime = parseInt( localStorage.getItem( 'theCube_time' ) );
 
-      if ( ! gameCubeData || ! gameTime ) throw new Error();
+      if ( ! gameCubeData || gameTime === null ) throw new Error();
+      if ( gameCubeData.size !== this.game.cube.sizeGenerated ) throw new Error();
 
       this.game.cube.pieces.forEach( piece => {
 
@@ -69,6 +68,8 @@ class Storage {
     const gameCubeData = { names: [], positions: [], rotations: [] };
     const gameTime = this.game.timer.deltaTime;
 
+    gameCubeData.size = this.game.cube.sizeGenerated;
+
     this.game.cube.pieces.forEach( piece => {
 
       gameCubeData.names.push( piece.name );
@@ -91,9 +92,35 @@ class Storage {
 
   }
 
-  // SCORE
-
   loadScores() {
+
+    try {
+
+      const scoresData = JSON.parse( localStorage.getItem( 'theCube_scores' ) );
+
+      if ( ! scoresData ) throw new Error();
+
+      this.game.scores.data = scoresData;
+
+    } catch( e ) {}
+
+  }
+
+  saveScores() {
+
+    const scoresData = this.game.scores.data;
+
+    localStorage.setItem( 'theCube_scores', JSON.stringify( scoresData ) );
+
+  }
+
+  clearScores() {
+
+    localStorage.removeItem( 'theCube_scores' );
+
+  }
+
+  migrateScores() {
 
     try {
 
@@ -102,49 +129,21 @@ class Storage {
       const scoresWorst = parseInt( localStorage.getItem( 'theCube_scoresWorst' ) );
       const scoresSolves = parseInt( localStorage.getItem( 'theCube_scoresSolves' ) );
 
-      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) throw new Error();
+      if ( ! scoresData || ! scoresBest || ! scoresSolves || ! scoresWorst ) return false;
 
-      this.game.scores.scores = scoresData;
-      this.game.scores.best = scoresBest;
-      this.game.scores.solves = scoresSolves;
-      this.game.scores.worst = scoresWorst;
+      this.game.scores.data[ 3 ].scores = scoresData;
+      this.game.scores.data[ 3 ].best = scoresBest;
+      this.game.scores.data[ 3 ].solves = scoresSolves;
+      this.game.scores.data[ 3 ].worst = scoresWorst;
 
-      return true;
+      localStorage.removeItem( 'theCube_scoresData' );
+      localStorage.removeItem( 'theCube_scoresBest' );
+      localStorage.removeItem( 'theCube_scoresWorst' );
+      localStorage.removeItem( 'theCube_scoresSolves' );
 
-    } catch( e ) {
-
-      this.clearScores();
-
-      return false;
-
-    }
+    } catch( e ) {}
 
   }
-
-  saveScores() {
-
-    const scoresData = this.game.scores.scores;
-    const scoresBest = this.game.scores.best;
-    const scoresWorst = this.game.scores.worst;
-    const scoresSolves = this.game.scores.solves;
-
-    localStorage.setItem( 'theCube_scoresData', JSON.stringify( scoresData ) );
-    localStorage.setItem( 'theCube_scoresBest', JSON.stringify( scoresBest ) );
-    localStorage.setItem( 'theCube_scoresWorst', JSON.stringify( scoresWorst ) );
-    localStorage.setItem( 'theCube_scoresSolves', JSON.stringify( scoresSolves ) );
-
-  }
-
-  clearScores() {
-
-    localStorage.removeItem( 'theCube_scoresData' );
-    localStorage.removeItem( 'theCube_scoresBest' );
-    localStorage.removeItem( 'theCube_scoresWorst' );
-    localStorage.removeItem( 'theCube_scoresSolves' );
-
-  }
-
-  // PREFERENCES
 
   loadPreferences() {
 
@@ -154,8 +153,9 @@ class Storage {
 
       if ( ! preferences ) throw new Error();
 
+      this.game.cube.size = parseInt( preferences.cubeSize );
       this.game.controls.flipConfig = parseInt( preferences.flipConfig );
-      this.game.scrambler.scrambleLength = parseInt( preferences.scrambleLength );
+      this.game.scrambler.dificulty = parseInt( preferences.dificulty );
 
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
@@ -166,8 +166,9 @@ class Storage {
 
     } catch (e) {
 
+      this.game.cube.size = 3;
       this.game.controls.flipConfig = 0;
-      this.game.scrambler.scrambleLength = 20;
+      this.game.scrambler.dificulty = 1;
 
       this.game.world.fov = 10;
       this.game.world.resize();
@@ -185,8 +186,9 @@ class Storage {
   savePreferences() {
 
     const preferences = {
+      cubeSize: this.game.cube.size,
       flipConfig: this.game.controls.flipConfig,
-      scrambleLength: this.game.scrambler.scrambleLength,
+      dificulty: this.game.scrambler.dificulty,
       fov: this.game.world.fov,
       theme: this.game.themes.theme,
     };

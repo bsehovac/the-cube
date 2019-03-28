@@ -6,9 +6,9 @@ class Cube {
 	constructor( game ) {
 
 		this.game = game;
+		this.size = 3;
 
 		this.geometry = {
-			pieceSize: 1 / 3,
 			pieceCornerRadius: 0.12,
 			edgeCornerRoundness: 0.15,
 			edgeScale: 0.82,
@@ -18,10 +18,28 @@ class Cube {
 		this.holder = new THREE.Object3D();
 		this.object = new THREE.Object3D();
 		this.animator = new THREE.Object3D();
+
 		this.holder.add( this.animator );
 		this.animator.add( this.object );
 
+		this.game.world.scene.add( this.holder );
+
+	}
+
+	init() {
+
 		this.cubes = [];
+		this.object.children = [];
+		this.object.add( this.game.controls.group );
+
+		if ( this.size === 2 ) this.scale = 1.25;
+		else if ( this.size === 3 ) this.scale = 1;
+		else if ( this.size > 3 ) this.scale = 3 / this.size;
+
+		this.object.scale.set( this.scale, this.scale, this.scale );
+
+		const controlsScale = this.size === 2 ? 0.825 : 1;
+		this.game.controls.edges.scale.set( controlsScale, controlsScale, controlsScale );
 		
 		this.generatePositions();
 		this.generateModel();
@@ -39,7 +57,24 @@ class Cube {
 
 		} );
 
-		this.game.world.scene.add( this.holder );
+		this.updateColors( this.game.themes.getColors() );
+
+		this.sizeGenerated = this.size;
+
+	}
+
+	resize() {
+
+		if (this.size !== this.sizeGenerated) {
+
+			this.reset();
+			this.init();
+
+			this.game.saved = false;
+			this.game.timer.reset();
+			this.game.storage.clearGame();
+
+		}
 
 	}
 
@@ -51,45 +86,38 @@ class Cube {
 		this.object.rotation.set( 0, 0, 0 );
 		this.animator.rotation.set( 0, 0, 0 );
 
-		this.pieces.forEach( piece => {
-
-			piece.position.copy( piece.userData.start.position );
-			piece.rotation.copy( piece.userData.start.rotation );
-
-		} );
-
 	}
 
 	generatePositions() {
+
+		const m = this.size - 1;
+		const first = this.size % 2 !== 0
+			? 0 - Math.floor(this.size / 2)
+			: 0.5 - this.size / 2;
 
 		let x, y, z;
 
 		this.positions = [];
 
-		for ( x = 0; x < 3; x ++ ) {
+		for ( x = 0; x < this.size; x ++ ) {
+			for ( y = 0; y < this.size; y ++ ) {
+		  	for ( z = 0; z < this.size; z ++ ) {
 
-			for ( y = 0; y < 3; y ++ ) {
-
-		  	for ( z = 0; z < 3; z ++ ) {
-
-		  		let position = new THREE.Vector3( x - 1, y - 1, z - 1 );
+		  		let position = new THREE.Vector3(first + x, first + y, first + z);
 		  		let edges = [];
 
 		  		if ( x == 0 ) edges.push(0);
-		  		if ( x == 2 ) edges.push(1);
+		  		if ( x == m ) edges.push(1);
 		  		if ( y == 0 ) edges.push(2);
-		  		if ( y == 2 ) edges.push(3);
+		  		if ( y == m ) edges.push(3);
 		  		if ( z == 0 ) edges.push(4);
-		  		if ( z == 2 ) edges.push(5);
+		  		if ( z == m ) edges.push(5);
 
 		  		position.edges = edges;
-
 		  		this.positions.push( position );
 
 		  	}
-
 		  }
-
 		}
 
 	}
@@ -111,7 +139,8 @@ class Cube {
 		const edgeGeometry = RoundedPlaneGeometry(
 			pieceSize,
 			this.geometry.edgeCornerRoundness,
-			this.geometry.edgeDepth );
+			this.geometry.edgeDepth
+		);
 
 		this.positions.forEach( ( position, index ) => {
 
@@ -167,6 +196,15 @@ class Cube {
 			this.pieces.push( piece );
 
 		} );
+
+	}
+
+	updateColors( colors ) {
+
+		if ( typeof this.pieces !== 'object' && typeof this.edges !== 'object' ) return;
+
+    this.pieces.forEach( piece => piece.userData.cube.material.color.setHex( colors.P ) );
+    this.edges.forEach( edge => edge.material.color.setHex( colors[ edge.name ] ) );
 
 	}
 

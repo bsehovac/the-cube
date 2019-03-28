@@ -22,7 +22,6 @@ class Transition {
     this.game.controls.disable();
 
     this.game.cube.object.position.y = this.data.cubeY;
-    this.game.controls.edges.position.y = this.data.cubeY;
     this.game.cube.animator.position.y = 4;
     this.game.cube.animator.rotation.x = - Math.PI / 3;
     this.game.world.camera.zoom = this.data.cameraZoom;
@@ -116,6 +115,9 @@ class Transition {
         this.game.cube.holder.rotation.x = 0.005 - tween.value * 0.01;
         this.game.cube.holder.rotation.z = - this.game.cube.holder.rotation.x;
         this.game.cube.holder.rotation.y = this.game.cube.holder.rotation.x;
+
+        this.game.controls.edges.position.y =
+          this.game.cube.holder.position.y + this.game.cube.object.position.y;
 
       },
     } );
@@ -392,8 +394,6 @@ class Transition {
     setTimeout( () => this.activeTransitions--, this.durations.timer );
 
   }
-
-  // Utilities
 
   splitLetters( element ) {
 

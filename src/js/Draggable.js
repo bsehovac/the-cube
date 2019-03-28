@@ -11,15 +11,11 @@ class Draggable {
       delta: new THREE.Vector2(),
       old: new THREE.Vector2(),
       drag: new THREE.Vector2(),
-      // momentum: new THREE.Vector2(),
     };
 
     this.options = Object.assign( {
       calcDelta: false,
-      // calcMomentum: false,
     }, options || {} );
-
-    // if ( this.options.calcMomentum ) this.options.calcDelta = true;
 
     this.element = element;
     this.touch = null;
@@ -40,12 +36,6 @@ class Draggable {
           this.position.drag.set( 0, 0 );
 
         }
-
-        // if ( this.options.calcMomentum ) {
-
-        //     this.position.momentum.set( 0, 0 );
-
-        // }
 
         this.touch = ( event.type == 'touchstart' );
 
@@ -73,12 +63,6 @@ class Draggable {
 
         }
 
-        // if ( this.options.calcMomentum ) {
-
-        //   this.addMomentumPoint( this.position.delta );
-
-        // }
-
         this.onDragMove( this.position );
 
       },
@@ -86,8 +70,6 @@ class Draggable {
       end: ( event ) => {
 
         this.getPositionCurrent( event );
-
-        // if ( this.options.calcMomentum ) this.getMomentum();
 
         this.onDragEnd( this.position );
 
@@ -144,38 +126,6 @@ class Draggable {
     return position;
 
   }
-
-  // addMomentumPoint( delta ) {
-
-  //   const time = Date.now();
-
-  //   while ( this.momentum.length > 0 ) {
-
-  //     if ( time - this.momentum[0].time <= 200 ) break;
-  //     this.momentum.shift();
-
-  //   }
-
-  //   if ( delta !== false ) this.momentum.push( { delta, time } );
-
-  // }
-
-  // getMomentum() {
-
-  //   const points = this.momentum.length;
-  //   const momentum = new THREE.Vector2();
-
-  //   this.addMomentumPoint( false );
-
-  //   this.momentum.forEach( ( point, index ) => {
-
-  //     momentum.add( point.delta.multiplyScalar( index / points ) )
-
-  //   } );
-
-  //   return momentum;
-
-  // }
 
 }
 

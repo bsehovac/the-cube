@@ -25,7 +25,7 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
     radiusSegments: radiusSegments
   };
 
-  var rs1 = radiusSegments + 1; //radius segments + 1
+  var rs1 = radiusSegments + 1;
   var totalVertexCount = ( rs1 * radiusSegments + 1 ) << 3;
 
   var positions = new THREE.BufferAttribute( new Float32Array( totalVertexCount * 3 ), 3 );
@@ -79,8 +79,8 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
     for ( var y = 0; y <= radiusSegments; y ++ ) {
 
       var v = y / radiusSegments;
-      var va = v * PIhalf; //arrange in 90 deg
-      var cosVa = Math.cos( va ); //scale of vertical angle
+      var va = v * PIhalf;
+      var cosVa = Math.cos( va );
       var sinVa = Math.sin( va );
 
       if ( y == radiusSegments ) {
@@ -92,7 +92,7 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
         var norm = vertex.clone();
         cornerNormals[ 0 ].push( norm );
         normalPool.push( norm );
-        continue; //skip row loop
+        continue;
 
       }
 
@@ -134,9 +134,6 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
 
   }
 
-
-  // weave corners ====================================
-
   function doCorners() {
 
     var indexInd = 0;
@@ -160,8 +157,8 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
 
       for ( var v = 0; v < radiusSegments - 1; v ++ ) {
 
-        var r1 = v * rs1; //row offset
-        var r2 = ( v + 1 ) * rs1; //next row
+        var r1 = v * rs1;
+        var r2 = ( v + 1 ) * rs1;
 
         for ( var u = 0; u < radiusSegments; u ++ ) {
 
@@ -225,8 +222,8 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
 
   function doFaces() {
 
-    var a = lastVertex;// + cornerVertNumber * 0;
-    var b = lastVertex + cornerVertNumber;// * 1;
+    var a = lastVertex;
+    var b = lastVertex + cornerVertNumber;
     var c = lastVertex + cornerVertNumber * 2;
     var d = lastVertex + cornerVertNumber * 3;
 
@@ -237,8 +234,8 @@ function RoundedBoxGeometry( size, radius, radiusSegments ) {
     indices.push( c );
     indices.push( d );
 
-    a = lastVertex + cornerVertNumber * 4;// + cornerVertNumber * 0;
-    b = lastVertex + cornerVertNumber * 5;// * 1;
+    a = lastVertex + cornerVertNumber * 4;
+    b = lastVertex + cornerVertNumber * 5;
     c = lastVertex + cornerVertNumber * 6;
     d = lastVertex + cornerVertNumber * 7;
 

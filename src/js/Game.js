@@ -1,7 +1,6 @@
 import { World } from './World.js';
 import { Cube } from './Cube.js';
 import { Controls } from './Controls.js';
-import { Keyboard } from './Keyboard.js';
 import { Scrambler } from './Scrambler.js';
 import { Transition } from './Transition.js';
 import { Timer } from './Timer.js';
@@ -10,7 +9,7 @@ import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 import { Themes } from './Themes.js';
-// import { AddToHomeScreen } from './AddToHomeScreen.js';
+// import { Keyboard } from './Keyboard.js';
 
 import { Icons } from './Icons.js';
 
@@ -46,13 +45,13 @@ class Game {
         prefs: document.querySelector( '.btn--prefs' ),
         back: document.querySelector( '.btn--back' ),
         stats: document.querySelector( '.btn--stats' ),
+        cancel: document.querySelector( '.btn--cancel' ),
       },
       rangeHandles: document.querySelectorAll( '.range__handle div' ),
     };
 
     this.world = new World( this );
     this.cube = new Cube( this );
-    this.keyboard = new Keyboard( this );
     this.controls = new Controls( this );
     this.scrambler = new Scrambler( this );
     this.transition = new Transition( this );
@@ -66,13 +65,15 @@ class Game {
     this.initActions();
 
     this.state = MENU;
-    this.saved = false;
     this.newGame = false;
+    this.saved = false;
 
     this.storage.init();
     this.preferences.init();
+    this.cube.init();
     this.transition.init();
 
+    this.storage.loadGame();
     this.scores.calcStats();
 
     setTimeout( () => {
@@ -114,7 +115,8 @@ class Game {
 
         }
 
-        const duration = this.saved ? 0 : this.scrambler.converted.length * this.controls.flipSpeeds[0];
+        const duration = this.saved ? 0 :
+          this.scrambler.converted.length * ( this.controls.flipSpeeds[0] + 10 );
 
         this.state = PLAYING;
         this.saved = true;
@@ -127,7 +129,7 @@ class Game {
         setTimeout( () => {
 
           this.transition.timer( SHOW );
-          this.transition.buttons( [ 'back' ], [] );
+          this.transition.buttons( [ 'back', 'cancel' ], [] );
 
         }, this.transition.durations.zoom - 1000 );
 
@@ -173,6 +175,8 @@ class Game {
 
       } else if ( this.state === PREFS ) {
 
+        this.cube.resize();
+
         this.state = MENU;
 
         this.transition.buttons( [ 'stats', 'prefs' ], [] );
@@ -204,7 +208,7 @@ class Game {
 
       this.state = MENU;
 
-      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back' ] );
+      this.transition.buttons( [ 'stats', 'prefs' ], [ 'back', 'cancel' ] );
 
       this.transition.zoom( MENU, 0 );
 

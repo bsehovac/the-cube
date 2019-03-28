@@ -4,30 +4,54 @@ class Scores {
 
     this.game = game;
 
-    this.scores = [];
-    this.solves = 0;
-    this.best = 0;
-    this.worst = 0;
+    this.data = {
+      2: {
+        scores: [],
+        solves: 0,
+        best: 0,
+        worst: 0,
+      },
+      3: {
+        scores: [],
+        solves: 0,
+        best: 0,
+        worst: 0,
+      },
+      4: {
+        scores: [],
+        solves: 0,
+        best: 0,
+        worst: 0,
+      },
+      5: {
+        scores: [],
+        solves: 0,
+        best: 0,
+        worst: 0,
+      }
+    }
 
   }
 
   addScore( time ) {
 
-    this.scores.push( time );
-    this.solves++;
+    const data = this.data[ this.game.cube.sizeGenerated ];
 
-    if ( this.scores.lenght > 100 ) this.scores.shift();
+    data.scores.push( time );
+    data.solves++;
+
+    if ( data.scores.lenght > 100 ) data.scores.shift();
 
     let bestTime = false    
 
-    if ( time < this.best || this.best === 0 ) {
+    if ( time < data.best || data.best === 0 ) {
 
-      this.best = time;
+      data.best = time;
       bestTime = true;
 
     }
 
-    if ( time > this.worst ) this.worst = time;
+    if ( time > data.worst ) data.worst = time;
 
     this.game.storage.saveScores();
 
@@ -37,9 +61,12 @@ class Scores {
 
   calcStats() {
 
-    this.setStat( 'total-solves', this.solves );
-    this.setStat( 'best-time', this.convertTime( this.best ) );
-    this.setStat( 'worst-time', this.convertTime( this.worst ) );
+    const data = this.data[ this.game.cube.sizeGenerated ];
+
+    this.setStat( 'cube-size', this.game.cube.sizeGenerated );
+    this.setStat( 'total-solves', data.solves );
+    this.setStat( 'best-time', this.convertTime( data.best ) );
+    this.setStat( 'worst-time', this.convertTime( data.worst ) );
     this.setStat( 'average-5', this.getAverage( 5 ) );
     this.setStat( 'average-12', this.getAverage( 12 ) );
     this.setStat( 'average-25', this.getAverage( 25 ) );
@@ -56,9 +83,11 @@ class Scores {
 
   getAverage( count ) {
 
-    if ( this.scores.length < count ) return 0;
+    const data = this.data[ this.game.cube.sizeGenerated ];
 
-    return this.convertTime( this.scores.slice(-count).reduce( ( a, b ) => a + b, 0 ) / count );
+    if ( data.scores.length < count ) return 0;
+
+    return this.convertTime( data.scores.slice( -count ).reduce( ( a, b ) => a + b, 0 ) / count );
 
   }
 

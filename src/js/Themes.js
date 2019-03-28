@@ -60,31 +60,27 @@ class Themes {
 
   }
 
+  getColors() {
+
+    return this.colors[ this.theme ];
+
+  }
+
   setTheme( theme ) {
 
     if ( theme === this.theme ) return;
 
     this.theme = theme;
 
-    const colors = this.colors[ this.theme ];
-
-    this.game.cube.pieces.forEach( piece => {
-
-      piece.userData.cube.material.color.setHex( colors.P );
-
-    } );
-
-    this.game.cube.edges.forEach( edge => {
-
-      edge.material.color.setHex( colors[ edge.name ] );
-
-    } );
+    const colors = this.getColors();
 
     this.game.dom.rangeHandles.forEach( handle => {
 
       handle.style.background = '#' + colors.R.toString(16).padStart(6, '0');
 
     } );
+
+    this.game.cube.updateColors( colors );
 
     this.game.confetti.updateColors( colors );
 

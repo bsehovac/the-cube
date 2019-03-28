@@ -52,6 +52,7 @@ class Range {
     this.element = document.querySelector( '.range[name="' + name + '"]' );
     this.track = this.element.querySelector( '.range__track' );
     this.handle = this.element.querySelector( '.range__handle' );
+    this.list = [].slice.call( this.element.querySelectorAll( '.range__list div' ) );
 
     this.value = options.value;
     this.min = options.range[0];

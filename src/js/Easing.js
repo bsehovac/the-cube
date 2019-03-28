@@ -1,7 +1,5 @@
 const Easing = {
 
-  // Linear 1, Quad 2, Cubic 3, Quart 4, Quint 5
-
   Power: {
 
     In: power => {
