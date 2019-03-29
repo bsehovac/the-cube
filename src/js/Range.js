@@ -25,13 +25,24 @@ document.querySelectorAll( 'range' ).forEach( el => {
   range.setAttribute( 'name', el.getAttribute( 'name' ) );
   rangeLabel.innerHTML = el.getAttribute( 'title' );
 
-  el.getAttribute( 'list' ).split( ',' ).forEach( listItemText => {
+  if ( el.hasAttribute( 'color' ) ) {
 
-    const listItem = document.createElement( 'div' );
-    listItem.innerHTML = listItemText;
-    rangeList.appendChild( listItem );
+    range.classList.add( 'range--type-color' );
+    range.classList.add( 'range--color-' + el.getAttribute( 'name' ) );
 
-  } );
+  }
+
+  if ( el.hasAttribute( 'list' ) ) {
+
+    el.getAttribute( 'list' ).split( ',' ).forEach( listItemText => {
+
+      const listItem = document.createElement( 'div' );
+      listItem.innerHTML = listItemText;
+      rangeList.appendChild( listItem );
+
+    } );
+
+  }
 
   el.parentNode.replaceChild( range, el );
 
@@ -62,10 +73,16 @@ class Range {
     this.onUpdate = options.onUpdate;
     this.onComplete = options.onComplete;
 
-    this.value = this.round( this.limitValue( this.value ) );
-    this.setHandlePosition();
+    this.setValue( this.value );
 
     this.initDraggable();
+
+  }
+
+  setValue( value ) {
+
+    this.value = this.round( this.limitValue( value ) );
+    this.setHandlePosition();
 
   }
 

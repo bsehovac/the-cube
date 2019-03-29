@@ -38,17 +38,7 @@ class Storage {
       if ( ! gameCubeData || gameTime === null ) throw new Error();
       if ( gameCubeData.size !== this.game.cube.sizeGenerated ) throw new Error();
 
-      this.game.cube.pieces.forEach( piece => {
-
-        const index = gameCubeData.names.indexOf( piece.name );
-
-        const position = gameCubeData.positions[index];
-        const rotation = gameCubeData.rotations[index];
-
-        piece.position.set( position.x, position.y, position.z );
-        piece.rotation.set( rotation.x, rotation.y, rotation.z );
-
-      } );
+      this.game.cube.loadFromData( gameCubeData );
 
       this.game.timer.deltaTime = gameTime;
 
@@ -160,6 +150,7 @@ class Storage {
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
 
+      this.game.themes.colors = preferences.colors;
       this.game.themes.setTheme( preferences.theme );
 
       return true;
@@ -191,6 +182,7 @@ class Storage {
       dificulty: this.game.scrambler.dificulty,
       fov: this.game.world.fov,
       theme: this.game.themes.theme,
+      colors: this.game.themes.colors,
     };
 
     localStorage.setItem( 'theCube_preferences', JSON.stringify( preferences ) );

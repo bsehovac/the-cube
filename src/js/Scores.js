@@ -61,9 +61,10 @@ class Scores {
 
   calcStats() {
 
-    const data = this.data[ this.game.cube.sizeGenerated ];
+    const s = this.game.cube.sizeGenerated;
+    const data = this.data[ s ];
 
-    this.setStat( 'cube-size', this.game.cube.sizeGenerated );
+    this.setStat( 'cube-size', `${s}<i>x</i>${s}<i>x</i>${s}` );
     this.setStat( 'total-solves', data.solves );
     this.setStat( 'best-time', this.convertTime( data.best ) );
     this.setStat( 'worst-time', this.convertTime( data.worst ) );
@@ -75,7 +76,7 @@ class Scores {
 
   setStat( name, value ) {
 
-    if ( value === 0 ) return;
+    if ( value === 0 ) value = '-';
 
     this.game.dom.stats.querySelector( `.stats[name="${name}"] b` ).innerHTML = value;
 

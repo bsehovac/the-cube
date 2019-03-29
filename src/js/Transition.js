@@ -32,7 +32,8 @@ class Transition {
     this.tweens.title = [];
     this.tweens.best = [];
     this.tweens.complete = [];
-    this.tweens.range = [];
+    this.tweens.prefs = [];
+    this.tweens.theme = [];
     this.tweens.stats = [];
 
   }
@@ -70,7 +71,7 @@ class Transition {
 
   }
 
-  cube( show ) {
+  cube( show, theming = false ) {
 
     this.activeTransitions++;
 
@@ -85,15 +86,35 @@ class Transition {
       onUpdate: tween => {
 
         this.game.cube.animator.position.y = show
-          ? ( 1 - tween.value ) * 4
+          ? ( theming ? 0.9 + ( 1 - tween.value ) * 3.5 : ( 1 - tween.value ) * 4 )
           : currentY + tween.value * 4;
 
         this.game.cube.animator.rotation.x = show
           ? ( 1 - tween.value ) * Math.PI / 3
           : currentRotation + tween.value * - Math.PI / 3;
 
-      }
+      },
     } );
+
+    if ( theming ) {
+
+      if ( show ) {
+
+        this.game.world.camera.zoom = 0.75;
+        this.game.world.camera.updateProjectionMatrix();
+
+      } else {
+
+        setTimeout( () => {
+
+          this.game.world.camera.zoom = this.data.cameraZoom;
+          this.game.world.camera.updateProjectionMatrix();
+
+        }, 1500 );
+
+      }
+
+    }
 
     this.durations.cube = show ? 1500 : 1500;
 
@@ -239,18 +260,45 @@ class Transition {
 
   preferences( show ) {
 
+    this.ranges( this.game.dom.prefs.querySelectorAll( '.range' ), 'prefs', show );
+
+  }
+
+  theming( show ) {
+
+    this.ranges( this.game.dom.theme.querySelectorAll( '.range' ), 'prefs', show );
+
+    // this.activeTransitions++;
+
+    // const text = this.game.dom.texts.theme;
+
+    // this.tweens.theme[ 'text' ] = new Tween( {
+    //   target: text.style,
+    //   easing: Easing.Sine.InOut(),
+    //   duration: show ? 800 : 400,
+    //   from: { opacity: show ? 0 : ( parseFloat( getComputedStyle( text ).opacity ) ) },
+    //   to: { opacity: show ? 1 : 0 },
+    // } );
+
+    // const duration = this.durations.theme = show ? 800 : 400;
+
+    // setTimeout( () => this.activeTransitions--, duration );
+
+  }
+
+  ranges( ranges, type, show ) {
+
     this.activeTransitions++;
 
-    this.tweens.range.forEach( tween => { tween.stop(); tween = null; } );
+    this.tweens[ type ].forEach( tween => { tween.stop(); tween = null; } );
+
+    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
 
     let tweenId = -1;
     let listMax = 0;
 
-    const ranges = this.game.dom.prefs.querySelectorAll( '.range' );
-    const easing = show ? Easing.Power.Out(2) : Easing.Power.In(3);
-
     ranges.forEach( ( range, rangeIndex ) => {
-
+    
       const label = range.querySelector( '.range__label' );
       const track = range.querySelector( '.range__track-line' );
       const handle = range.querySelector( '.range__handle' );
@@ -263,7 +311,7 @@ class Transition {
       handle.style.opacity = show ? 0 : 1;
       handle.style.pointerEvents = show ? 'all' : 'none';
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
+      this.tweens[ type ][ tweenId++ ] = new Tween( {
         delay: show ? delay : delay,
         duration: 400,
         easing: easing,
@@ -278,7 +326,7 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
+      this.tweens[ type ][ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
@@ -294,7 +342,7 @@ class Transition {
         }
       } );
 
-      this.tweens.range[ tweenId++ ] = new Tween( {
+      this.tweens[ type ][ tweenId++ ] = new Tween( {
         delay: show ? delay + 100 : delay,
         duration: 400,
         easing: easing,
@@ -314,7 +362,7 @@ class Transition {
 
         listItem.style.opacity = show ? 0 : 1;
 
-        this.tweens.range[ tweenId++ ] = new Tween( {
+        this.tweens[ type ][ tweenId++ ] = new Tween( {
           delay: show ? delay + 200 + labelIndex * 50 : delay,
           duration: 400,
           easing: easing,
@@ -337,11 +385,11 @@ class Transition {
 
     } );
 
-    this.durations.preferences = show
+    this.durations[ type ] = show
       ? ( ( ranges.length - 1 ) * 100 ) + 200 + listMax * 50 + 400
       : ( ( ranges.length - 1 ) * 100 ) + 400;
 
-    setTimeout( () => this.activeTransitions--, this.durations.preferences );
+    setTimeout( () => this.activeTransitions--, this.durations[ type ] ); 
 
   }
 

@@ -7,9 +7,10 @@
   &__game,
   &__texts,
   &__prefs,
+  &__theme,
   &__stats,
   &__buttons
-    +fullscreen
+    +inset
     overflow: hidden
 
   &__background
@@ -18,7 +19,7 @@
     background: #d1d5db
 
     &:after
-      +fullscreen
+      +inset
       content: ''
       background-image: linear-gradient(to bottom, rgba(#fff, 1) 50%, rgba(#fff, 0) 100%)
 
@@ -35,13 +36,17 @@
     z-index: 3
 
   &__prefs,
-  &__stats
+  &__stats,
+  &__theme
     display: flex
     flex-flow: column nowrap
     justify-content: center
     align-items: center
     overflow: hidden
     z-index: 4
+
+  &__theme
+    padding-top: 15em
 
   &__buttons
     z-index: 5

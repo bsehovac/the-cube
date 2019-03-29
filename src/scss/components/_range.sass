@@ -5,13 +5,13 @@
   opacity: 0
 
   &:not(:last-child)
-    margin-bottom: 1.75em
+    margin-bottom: 2em
 
   &__label
     position: relative
     font-size: 0.9em
     line-height: 0.75em
-    padding-bottom: 0.4em
+    padding-bottom: 0.5em
     z-index: 2
 
   &__track
@@ -29,7 +29,7 @@
       margin-top: -1px
       left: -0.5em
       right: -0.5em
-      transform-origin: left center;
+      transform-origin: left center
 
   &__handle
     position: absolute
@@ -75,3 +75,71 @@
     font-size: 0.55em
     color: rgba(#000, 0.5)
     z-index: 1
+
+  &--type
+    &-color
+      &:not(:last-child)
+        margin-bottom: 1em
+
+      .range
+        &__list
+          display: none
+
+        &__handle
+          > div
+            background: #ccc !important
+
+            &:before
+              +inset
+              content: ''
+              background: currentColor
+              z-index: 3
+              border-radius: 0.2em
+              transform: scale3d(0.7, 0.7, 1)
+
+        &__track
+          &-line
+            background: transparent
+
+            &:after
+              +inset
+              content: ''
+              opacity: 0.5
+
+  &--color
+    &-hue
+      .range
+        &__handle
+          color: red
+
+        &__track
+          color: red
+
+          &-line
+            &:after
+              background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red)
+              
+
+    &-saturation
+      .range
+        &__handle
+          color: red
+
+        &__track
+          color: red
+
+          &-line
+            &:after
+              background: linear-gradient(to right, gray, currentColor)
+
+    &-lightness
+      .range
+        &__handle
+          color: red
+
+        &__track
+          color: red
+
+          &-line
+            &:after
+              background: linear-gradient(to right, black, currentColor, white)

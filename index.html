@@ -46,7 +46,7 @@
   </script>
 
   <script>
-    window.gameVersion = '0.99.0';
+    window.gameVersion = '0.99.2';
   </script>
 
 </head>
@@ -76,6 +76,9 @@
         <icon trophy></icon>
         <span>Best Time!</span>
       </div>
+      <!-- <div class="text text--theme">
+        <span>Click on the piece to open color picker.</span>
+      </div> -->
     </div>
 
     <div class="ui__prefs">
@@ -86,9 +89,15 @@
       <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
     </div>
 
+    <div class="ui__theme">
+      <range name="hue" title="Hue" color></range>
+      <range name="saturation" title="Saturation" color></range>
+      <range name="lightness" title="Lightness" color></range>
+    </div>
+
     <div class="ui__stats">
       <div class="stats" name="cube-size">
-        <i>Cube:</i><b>3</b>
+        <i>Cube:</i><b>3x3x3</b>
       </div>
       <div class="stats" name="total-solves">
         <i>Total solves:</i><b>-</b>
@@ -117,11 +126,14 @@
       <button class="btn btn--br btn--prefs">
         <icon settings></icon>
       </button>
-      <button class="btn btn--br btn--cancel">
-        <icon cancel></icon>
-      </button>
       <button class="btn btn--bl btn--back">
         <icon back></icon>
+      </button>
+      <button class="btn btn--br btn--theme">
+        <icon theme></icon>
+      </button>
+      <button class="btn btn--br btn--reset">
+        <icon reset></icon>
       </button>
     </div>
 
@@ -132,11 +144,13 @@
 
   <script src="upup.min.js"></script>
   <script>
-    UpUp.start({
-      'cache-version': window.gameVersion,
-      'content-url': 'index.html',
-      'assets': [ 'assets/css/styles.css', 'assets/js/three.js', 'assets/js/cube.js' ]
-    });
+    if (UpUp !== null) {
+      UpUp.start({
+        'cache-version': window.gameVersion,
+        'content-url': 'index.html',
+        'assets': [ 'assets/css/styles.css', 'assets/js/three.js', 'assets/js/cube.js' ]
+      });
+    }
   </script>
 
 </body>

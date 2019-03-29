@@ -7,7 +7,7 @@
 				"*.js"
 			],
 			"name": "Rollup",
-			"shell_cmd": "rollup -c rollup.config.js",
+			"shell_cmd": "rollup -c rollup.config.dev.js",
 			"working_dir": "${project_path}"
 		},
 		{

@@ -63,9 +63,11 @@ class Cube {
 
 	}
 
-	resize() {
+	resize( force = false ) {
 
-		if (this.size !== this.sizeGenerated) {
+		if ( this.size !== this.sizeGenerated || force ) {
+
+			this.size = this.game.preferences.ranges.size.value;
 
 			this.reset();
 			this.init();
@@ -205,6 +207,27 @@ class Cube {
 
     this.pieces.forEach( piece => piece.userData.cube.material.color.setHex( colors.P ) );
     this.edges.forEach( edge => edge.material.color.setHex( colors[ edge.name ] ) );
+
+	}
+
+	loadFromData( data ) {
+
+		this.size = data.size;
+
+		this.reset();
+		this.init();
+
+		this.pieces.forEach( piece => {
+
+      const index = data.names.indexOf( piece.name );
+
+      const position = data.positions[index];
+      const rotation = data.rotations[index];
+
+      piece.position.set( position.x, position.y, position.z );
+      piece.rotation.set( rotation.x, rotation.y, rotation.z );
+
+    } );
 
 	}
 

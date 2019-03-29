@@ -5,6 +5,7 @@ class Preferences {
   constructor( game ) {
 
     this.game = game;
+    this.editColor = null;
 
   }
 
@@ -85,6 +86,27 @@ class Preferences {
         onComplete: () => this.game.storage.savePreferences()
       } ),
 
+      hue: new Range( 'hue', {
+        value: 0,
+        range: [ 0, 360 ],
+        onUpdate: value => this.updateHSL(),
+        onComplete: () => this.saveHSL(),
+      } ),
+
+      saturation: new Range( 'saturation', {
+        value: 100,
+        range: [ 0, 100 ],
+        onUpdate: value => this.updateHSL(),
+        onComplete: () => this.saveHSL(),
+      } ),
+
+      lightness: new Range( 'lightness', {
+        value: 50,
+        range: [ 0, 100 ],
+        onUpdate: value => this.updateHSL(),
+        onComplete: () => this.saveHSL(),
+      } ),
+
     };
 
     this.ranges.scramble.list.forEach( ( item, i ) => {
@@ -93,6 +115,58 @@ class Preferences {
 
     } );
     
+  }
+
+  setHSL( color = null ) {
+
+    this.editColor = ( color === null) ? 'R' : color;
+
+    const hsl = new THREE.Color( this.game.themes.getColors()[ this.editColor ] )
+
+    const { h, s, l } = hsl.getHSL( hsl );
+    const { hue, saturation, lightness } = this.ranges;
+
+    hue.setValue( h * 360 );
+    saturation.setValue( s * 100 );
+    lightness.setValue( l * 100 );
+
+    this.game.dom.theme.style.display = 'none';
+    this.game.dom.theme.offsetHeight;
+    this.game.dom.theme.style.display = '';
+
+    this.updateHSL();
+    this.saveHSL()
+
+  }
+
+  updateHSL() {
+
+    const { hue, saturation, lightness } = this.ranges;
+
+    const h = Math.round( hue.value );
+    const s = Math.round( saturation.value );
+    const l = Math.round( lightness.value );
+
+    const color = `hsl(${h}, ${s}%, ${l}%)`;
+
+    hue.handle.style.color = color;
+    saturation.handle.style.color = color;
+    lightness.handle.style.color = color;
+
+    saturation.track.style.color = `hsl(${h}, 100%, 50%)`;
+    lightness.track.style.color = `hsl(${h}, ${s}%, 50%)`;
+
+    const theme = this.game.themes.theme;
+
+    this.game.themes.colors[ theme ][ this.editColor ] = new THREE.Color( color ).getHex();
+    this.game.themes.setTheme();
+
+  }
+
+  saveHSL() {
+
+    this.game.storage.savePreferences();
+
   }
 
 }
