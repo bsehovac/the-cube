@@ -9,6 +9,7 @@ import { Confetti } from './Confetti.js';
 import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 import { Themes } from './Themes.js';
+import { ThemeEditor } from './ThemeEditor.js';
 import { States } from './States.js';
 // import { Keyboard } from './Keyboard.js';
 
@@ -65,7 +66,6 @@ class Game {
         reset: document.querySelector( '.btn--reset' ),
         theme: document.querySelector( '.btn--theme' ),
       },
-      rangeHandles: document.querySelectorAll( '.range__handle div' ),
     };
 
     this.world = new World( this );
@@ -79,6 +79,7 @@ class Game {
     this.storage = new Storage( this );
     this.confetti = new Confetti( this );
     this.themes = new Themes( this );
+    this.themeEditor = new ThemeEditor( this );
 
     this.initActions();
 
@@ -174,7 +175,7 @@ class Game {
 
       if ( this.state === STATE.Theme ) {
 
-        this.themes.resetTheme();
+        this.themeEditor.resetTheme();
 
       }
       
@@ -282,7 +283,7 @@ class Game {
 
   theme( show ) {
 
-    this.themes.colorPicker( show );
+    this.themeEditor.colorPicker( show );
     
     if ( show ) {
 
@@ -290,7 +291,7 @@ class Game {
 
       this.cube.loadFromData( States[ '3' ][ 'checkerboard' ] );
 
-      this.preferences.setHSL();
+      this.themeEditor.setHSL( null, false );
 
       this.state = STATE.Theme;
 

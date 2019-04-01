@@ -25,6 +25,9 @@
 	[
 		{
 			"path": "."
+		},
+		{
+			"path": "/Users/boris/Desktop/the-cube-codepen"
 		}
 	],
 	"settings":

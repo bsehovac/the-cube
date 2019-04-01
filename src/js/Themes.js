@@ -5,8 +5,6 @@ class Themes {
     this.game = game;
     this.theme = null;
 
-    this.getPieceColor = this.getPieceColor.bind( this );
-
     this.defaults = {
       cube: {
         U: 0xfff7ff, // white
@@ -77,9 +75,9 @@ class Themes {
 
     const colors = this.getColors();
 
-    this.game.dom.rangeHandles.forEach( handle => {
+    this.game.dom.prefs.querySelectorAll( '.range__handle div' ).forEach( range => {
 
-      handle.style.background = '#' + colors.R.toString(16).padStart(6, '0');
+      range.style.background = '#' + colors.R.toString(16).padStart(6, '0');
 
     } );
 
@@ -88,47 +86,6 @@ class Themes {
     this.game.confetti.updateColors( colors );
 
     this.game.dom.back.style.background = '#' + colors.G.toString(16).padStart(6, '0');
-
-  }
-
-  colorPicker( enable ) {
-
-    if ( enable ) {
-
-      this.game.dom.game.addEventListener( 'click', this.getPieceColor, false );
-
-    } else {
-
-      this.game.dom.game.removeEventListener( 'click', this.getPieceColor, false );
-
-    }
-
-  }
-
-  getPieceColor( event ) {
-
-    const clickEvent = event.touches
-      ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] )
-      : event;
-
-    const clickPosition = new THREE.Vector2( clickEvent.pageX, clickEvent.pageY );
-
-    const edgeIntersect = this.game.controls.getIntersect( clickPosition, this.game.cube.edges, true );
-    const pieceIntersect = this.game.controls.getIntersect( clickPosition, this.game.cube.cubes, true );
-
-    const name = edgeIntersect ? edgeIntersect.object.name : pieceIntersect ? 'P' : 'G';
-
-    this.game.preferences.setHSL( name );
-
-  }
-
-  resetTheme() {
-
-    this.colors[ this.theme ] = JSON.parse( JSON.stringify( this.defaults[ this.theme ] ) );
-
-    this.setTheme();
-
-    this.game.preferences.setHSL();
 
   }
 

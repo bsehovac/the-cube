@@ -268,22 +268,6 @@ class Transition {
 
     this.ranges( this.game.dom.theme.querySelectorAll( '.range' ), 'prefs', show );
 
-    // this.activeTransitions++;
-
-    // const text = this.game.dom.texts.theme;
-
-    // this.tweens.theme[ 'text' ] = new Tween( {
-    //   target: text.style,
-    //   easing: Easing.Sine.InOut(),
-    //   duration: show ? 800 : 400,
-    //   from: { opacity: show ? 0 : ( parseFloat( getComputedStyle( text ).opacity ) ) },
-    //   to: { opacity: show ? 1 : 0 },
-    // } );
-
-    // const duration = this.durations.theme = show ? 800 : 400;
-
-    // setTimeout( () => this.activeTransitions--, duration );
-
   }
 
   ranges( ranges, type, show ) {
