@@ -9,6 +9,6 @@ export default {
       format: 'iife',
       file: './assets/js/cube.js',
       indent: '\t',
-      sourceMap: false,
+      sourcemap: false,
   },
 };
