@@ -5,11 +5,13 @@
   "main": "",
   "dependencies": {},
   "devDependencies": {
-    "rollup-plugin-babel-minify": "^5.0.0"
+    "rollup": "^2.23.0",
+    "rollup-plugin-babel-minify": "^5.0.0",
+    "vercel": "^19.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c rollup.config.build.js && cp upup.min.js export/ && cp upup.sw.min.js export/ && cp index.html export/ && cp -R assets export/"
+    "build": "rollup -c rollup.config.build.js && mkdir -p export && cp upup.min.js export/ && cp upup.sw.min.js export/ && cp index.html export/ && cp -R assets export/ && cp -R static/.well-known export/"
   },
   "repository": {
     "type": "git",
