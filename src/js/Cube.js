@@ -1,3 +1,5 @@
+import {Object3D, Vector3, Mesh, MeshLambertMaterial} from 'three';
+
 import { RoundedBoxGeometry } from './plugins/RoundedBoxGeometry.js';
 import { RoundedPlaneGeometry } from './plugins/RoundedPlaneGeometry.js';
 
@@ -15,9 +17,9 @@ class Cube {
 			edgeDepth: 0.01,
 		};
 
-		this.holder = new THREE.Object3D();
-		this.object = new THREE.Object3D();
-		this.animator = new THREE.Object3D();
+		this.holder = new Object3D();
+		this.object = new Object3D();
+		this.animator = new Object3D();
 
 		this.holder.add( this.animator );
 		this.animator.add( this.object );
@@ -105,7 +107,7 @@ class Cube {
 			for ( y = 0; y < this.size; y ++ ) {
 		  	for ( z = 0; z < this.size; z ++ ) {
 
-		  		let position = new THREE.Vector3(first + x, first + y, first + z);
+		  		let position = new Vector3(first + x, first + y, first + z);
 		  		let edges = [];
 
 		  		if ( x == 0 ) edges.push(0);
@@ -131,9 +133,9 @@ class Cube {
 
 		const pieceSize = 1 / 3;
 
-		const mainMaterial = new THREE.MeshLambertMaterial();
+		const mainMaterial = new MeshLambertMaterial();
 
-		const pieceMesh = new THREE.Mesh(
+		const pieceMesh = new Mesh(
 			new RoundedBoxGeometry( pieceSize, this.geometry.pieceCornerRadius, 3 ),
 			mainMaterial.clone()
 		);
@@ -146,7 +148,7 @@ class Cube {
 
 		this.positions.forEach( ( position, index ) => {
 
-			const piece = new THREE.Object3D();
+			const piece = new Object3D();
 			const pieceCube = pieceMesh.clone();
 			const pieceEdges = [];
 
@@ -157,7 +159,7 @@ class Cube {
 
 			position.edges.forEach( position => {
 
-				const edge = new THREE.Mesh( edgeGeometry, mainMaterial.clone() );
+				const edge = new Mesh( edgeGeometry, mainMaterial.clone() );
 				const name = [ 'L', 'R', 'D', 'U', 'B', 'F' ][ position ];
 				const distance = pieceSize / 2;
 

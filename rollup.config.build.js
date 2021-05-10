@@ -1,14 +1,16 @@
 import minify from 'rollup-plugin-babel-minify';
+import resolve from "@rollup/plugin-node-resolve"
 
 export default {
   input: './src/js/Game.js',
   plugins: [
-    minify({ comments: false, sourceMap: false }),
+    resolve(),
+    // minify({ comments: false, sourceMap: true }),
   ],
   output: {
       format: 'iife',
-      file: './assets/js/cube.js',
+      file: './static/assets/js/cube.js',
       indent: '\t',
-      sourcemap: false,
+      sourcemap: true,
   },
 };
