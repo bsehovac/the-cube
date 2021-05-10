@@ -1,11 +1,11 @@
-import minify from 'rollup-plugin-babel-minify';
+import { terser } from 'rollup-plugin-terser';
 import resolve from "@rollup/plugin-node-resolve"
 
 export default {
   input: './src/js/Game.js',
   plugins: [
     resolve(),
-    // minify({ comments: false, sourceMap: true }),
+    terser(),
   ],
   output: {
       format: 'iife',
