@@ -1,3 +1,5 @@
+import {Vector2} from 'three';
+
 window.addEventListener( 'touchmove', () => {} );
 document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
 
@@ -6,11 +8,11 @@ class Draggable {
   constructor( element, options ) {
 
     this.position = {
-      current: new THREE.Vector2(),
-      start: new THREE.Vector2(),
-      delta: new THREE.Vector2(),
-      old: new THREE.Vector2(),
-      drag: new THREE.Vector2(),
+      current: new Vector2(),
+      start: new Vector2(),
+      delta: new Vector2(),
+      old: new Vector2(),
+      drag: new Vector2(),
     };
 
     this.options = Object.assign( {

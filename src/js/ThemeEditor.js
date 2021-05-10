@@ -1,3 +1,5 @@
+import {Color, Vector2} from 'three';
+
 import { Tween, Easing } from './Tween.js';
 
 class ThemeEditor {
@@ -18,7 +20,7 @@ class ThemeEditor {
     s = Math.round( s );
     l = Math.round( l );
 
-    return new THREE.Color( `hsl(${h}, ${s}%, ${l}%)` );
+    return new Color( `hsl(${h}, ${s}%, ${l}%)` );
 
   }
 
@@ -26,7 +28,7 @@ class ThemeEditor {
 
     this.editColor = ( color === null) ? 'R' : color;
 
-    const hsl = new THREE.Color( this.game.themes.getColors()[ this.editColor ] );
+    const hsl = new Color( this.game.themes.getColors()[ this.editColor ] );
 
     const { h, s, l } = hsl.getHSL( hsl );
     const { hue, saturation, lightness } = this.game.preferences.ranges;
@@ -138,7 +140,7 @@ class ThemeEditor {
       ? ( event.touches[ 0 ] || event.changedTouches[ 0 ] )
       : event;
 
-    const clickPosition = new THREE.Vector2( clickEvent.pageX, clickEvent.pageY );
+    const clickPosition = new Vector2( clickEvent.pageX, clickEvent.pageY );
 
     let edgeIntersect = this.game.controls.getIntersect( clickPosition, this.game.cube.edges, true );
     let pieceIntersect = this.game.controls.getIntersect( clickPosition, this.game.cube.cubes, true );

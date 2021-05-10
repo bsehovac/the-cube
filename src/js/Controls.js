@@ -1,3 +1,5 @@
+import {Raycaster, MeshBasicMaterial, Object3D, Mesh, PlaneBufferGeometry, BoxBufferGeometry, Vector3, Matrix4, Vector2} from 'three';
+
 import { Tween, Easing } from './Tween.js';
 import { Draggable } from './Draggable.js';
 
@@ -17,24 +19,24 @@ class Controls {
     this.flipEasings = [ Easing.Power.Out( 3 ), Easing.Sine.Out(), Easing.Back.Out( 1.5 ) ];
     this.flipSpeeds = [ 125, 200, 300 ];
 
-    this.raycaster = new THREE.Raycaster();
+    this.raycaster = new Raycaster();
 
-    const helperMaterial = new THREE.MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } );
+    const helperMaterial = new MeshBasicMaterial( { depthWrite: false, transparent: true, opacity: 0, color: 0x0033ff } );
 
-    this.group = new THREE.Object3D();
+    this.group = new Object3D();
     this.group.name = 'controls';
     this.game.cube.object.add( this.group );
 
-    this.helper = new THREE.Mesh(
-      new THREE.PlaneBufferGeometry( 200, 200 ),
+    this.helper = new Mesh(
+      new PlaneBufferGeometry( 200, 200 ),
       helperMaterial.clone()
     );
 
     this.helper.rotation.set( 0, Math.PI / 4, 0 );
     this.game.world.scene.add( this.helper );
 
-    this.edges = new THREE.Mesh(
-      new THREE.BoxBufferGeometry( 1, 1, 1 ),
+    this.edges = new Mesh(
+      new BoxBufferGeometry( 1, 1, 1 ),
       helperMaterial.clone(),
     );
 
@@ -103,7 +105,7 @@ class Controls {
 
       } else {
 
-        this.dragNormal = new THREE.Vector3( 0, 0, 1 );
+        this.dragNormal = new Vector3( 0, 0, 1 );
         this.flipType = 'cube';
 
         this.helper.position.set( 0, 0, 0 );
@@ -116,7 +118,7 @@ class Controls {
       if ( planeIntersect === false ) return;
 
       this.dragCurrent = this.helper.worldToLocal( planeIntersect.point );
-      this.dragTotal = new THREE.Vector3();
+      this.dragTotal = new Vector3();
       this.state = ( this.state === STILL ) ? PREPARING : this.state;
 
     };
@@ -142,7 +144,7 @@ class Controls {
 
         if ( this.flipType === 'layer' ) {
 
-          const direction = new THREE.Vector3();
+          const direction = new Vector3();
           direction[ this.dragDirection ] = 1;
 
           const worldDirection = this.helper.localToWorld( direction ).sub( this.helper.position );
@@ -158,7 +160,7 @@ class Controls {
             ? ( ( this.dragDirection == 'y' && position.current.x > this.game.world.width / 2 ) ? 'z' : 'x' )
             : 'y';
 
-          this.flipAxis = new THREE.Vector3();
+          this.flipAxis = new Vector3();
           this.flipAxis[ axis ] = 1 * ( ( axis == 'x' ) ? - 1 : 1 );
 
         }
@@ -345,9 +347,10 @@ class Controls {
 
       const piece = this.game.cube.pieces[ index ];
 
-      piece.applyMatrix( from.matrixWorld );
+      piece.applyMatrix4( from.matrixWorld );
       from.remove( piece );
-      piece.applyMatrix( new THREE.Matrix4().getInverse( to.matrixWorld ) );
+      piece.applyMatrix4( new Matrix4().copy( to.matrixWorld ).invert())
+      // piece.applyMatrix4( new Matrix4().getInverse( to.matrixWorld ) );
       to.add( piece );
 
     } );
@@ -395,7 +398,7 @@ class Controls {
 
       const layer = this.getLayer( move.position );
 
-      this.flipAxis = new THREE.Vector3();
+      this.flipAxis = new Vector3();
       this.flipAxis[ move.axis ] = 1;
       this.state = ROTATING;
 
@@ -410,7 +413,7 @@ class Controls {
 
     } else if ( type === 'CUBE' ) {
 
-      this.flipAxis = new THREE.Vector3();
+      this.flipAxis = new Vector3();
       this.flipAxis[ move.axis ] = 1;
       this.state = ROTATING;
 
@@ -437,7 +440,7 @@ class Controls {
     const move = converted[ 0 ];
     const layer = this.getLayer( move.position );
 
-    this.flipAxis = new THREE.Vector3();
+    this.flipAxis = new Vector3();
     this.flipAxis[ move.axis ] = 1;
 
     this.selectLayer( layer );
@@ -485,7 +488,7 @@ class Controls {
 
   detach( child, parent ) {
 
-    child.applyMatrix( parent.matrixWorld );
+    child.applyMatrix4( parent.matrixWorld );
     parent.remove( child );
     this.game.world.scene.add( child );
 
@@ -493,7 +496,8 @@ class Controls {
 
   attach( child, parent ) {
 
-    child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+    child.applyMatrix4( new Matrix4().copy( parent.matrixWorld ).invert())
+    // child.applyMatrix4( new Matrix4().getInverse( parent.matrixWorld ) );
     this.game.world.scene.remove( child );
     parent.add( child );
 
@@ -512,7 +516,7 @@ class Controls {
   getMomentum() {
 
     const points = this.momentum.length;
-    const momentum = new THREE.Vector2();
+    const momentum = new Vector2();
 
     this.addMomentumPoint( false );
 

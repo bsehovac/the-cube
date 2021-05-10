@@ -1,3 +1,5 @@
+import {Vector3} from 'three';
+
 class Scrambler {
 
 	constructor( game ) {
@@ -82,7 +84,7 @@ class Scrambler {
 
 		if ( this.game.cube.size > 3 && face !== face.toLowerCase() ) row = row * 2;
 
-		const position = new THREE.Vector3();
+		const position = new Vector3();
 		position[ { D: 'y', U: 'y', L: 'x', R: 'x', F: 'z', B: 'z' }[ face.toUpperCase() ] ] = row;
 
 		const angle = ( Math.PI / 2 ) * - row * ( ( modifier == "'" ) ? - 1 : 1 );
