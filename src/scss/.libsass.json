@@ -1,6 +1,6 @@
 {
     "output": {
-        "dir": "../../assets/css/",
+        "dir": "../../static/assets/css/",
         "structure": "nested"
     },
     "compile": {

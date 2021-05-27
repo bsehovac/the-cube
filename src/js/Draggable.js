@@ -1,3 +1,5 @@
+import {Vector2} from 'three';
+
 window.addEventListener( 'touchmove', () => {} );
 document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
 
@@ -6,11 +8,11 @@ class Draggable {
   constructor( element, options ) {
 
     this.position = {
-      current: new THREE.Vector2(),
-      start: new THREE.Vector2(),
-      delta: new THREE.Vector2(),
-      old: new THREE.Vector2(),
-      drag: new THREE.Vector2(),
+      current: new Vector2(),
+      start: new Vector2(),
+      delta: new Vector2(),
+      old: new Vector2(),
+      drag: new Vector2(),
     };
 
     this.options = Object.assign( {
@@ -41,8 +43,8 @@ class Draggable {
 
         this.onDragStart( this.position );
 
-        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
-        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );
+        window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, {capture: false, passive: true} );
+        window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, {capture: false, passive: true} );
 
       },
 
@@ -92,8 +94,8 @@ class Draggable {
 
   enable() {
 
-    this.element.addEventListener( 'touchstart', this.drag.start, false );
-    this.element.addEventListener( 'mousedown', this.drag.start, false );
+    this.element.addEventListener( 'touchstart', this.drag.start, {capture: false, passive: true} );
+    this.element.addEventListener( 'mousedown', this.drag.start, {capture: false, passive: true} );
 
     return this;
 
@@ -101,8 +103,8 @@ class Draggable {
 
   disable() {
 
-    this.element.removeEventListener( 'touchstart', this.drag.start, false );
-    this.element.removeEventListener( 'mousedown', this.drag.start, false );
+    this.element.removeEventListener( 'touchstart', this.drag.start, {capture: false, passive: true} );
+    this.element.removeEventListener( 'mousedown', this.drag.start, {capture: false, passive: true} );
 
     return this;
 

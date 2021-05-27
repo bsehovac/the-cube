@@ -1,3 +1,5 @@
+import {PlaneGeometry, MeshLambertMaterial, DoubleSide, Object3D, Vector3, MathUtils, Mesh, Color} from 'three';
+
 import { Animation } from './Animation.js';
 
 class Confetti {
@@ -14,8 +16,8 @@ class Confetti {
       colors: [ 0x41aac8, 0x82ca38, 0xffef48, 0xef3923, 0xff8c0a ],
     }
 
-    this.geometry = new THREE.PlaneGeometry( 1, 1 );
-    this.material = new THREE.MeshLambertMaterial( { side: THREE.DoubleSide } );
+    this.geometry = new PlaneGeometry( 1, 1 );
+    this.material = new MeshLambertMaterial( { side: DoubleSide } );
 
     this.holders = [
       new ConfettiStage( this.game, this, 1, 20 ),
@@ -85,10 +87,10 @@ class ConfettiStage extends Animation {
     this.count = count;
     this.particles = [];
 
-    this.holder = new THREE.Object3D();
+    this.holder = new Object3D();
     this.holder.rotation.copy( this.game.world.camera.rotation );
 
-    this.object = new THREE.Object3D();
+    this.object = new Object3D();
     this.holder.add( this.object );
 
     this.resizeViewport = this.resizeViewport.bind( this );
@@ -150,7 +152,7 @@ class ConfettiStage extends Animation {
 
   resizeViewport() {
 
-    const fovRad = this.game.world.camera.fov * THREE.Math.DEG2RAD;
+    const fovRad = this.game.world.camera.fov * MathUtils.DEG2RAD;
 
     this.height = 2 * Math.tan( fovRad / 2 ) * ( this.game.world.camera.position.length() - this.distanceFromCube );
     this.width = this.height * this.game.world.camera.aspect;
@@ -174,13 +176,13 @@ class Particle {
     this.confetti = confetti;
     this.options = this.confetti.options;
 
-    this.velocity = new THREE.Vector3();
-    this.force = new THREE.Vector3();
+    this.velocity = new Vector3();
+    this.force = new Vector3();
 
-    this.mesh = new THREE.Mesh( this.confetti.geometry, this.confetti.material.clone() );
+    this.mesh = new Mesh( this.confetti.geometry, this.confetti.material.clone() );
     this.confetti.object.add( this.mesh );
 
-    this.size = THREE.Math.randFloat( this.options.size.min, this.options.size.max );
+    this.size = MathUtils.randFloat( this.options.size.min, this.options.size.max );
     this.mesh.scale.set( this.size, this.size, this.size );
 
     return this;
@@ -191,16 +193,16 @@ class Particle {
 
     this.completed = false;
 
-    this.color = new THREE.Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
+    this.color = new Color( this.options.colors[ Math.floor( Math.random() * this.options.colors.length ) ] );
     this.mesh.material.color.set( this.color );
 
-    this.speed = THREE.Math.randFloat( this.options.speed.min, this.options.speed.max ) * - 1;
-    this.mesh.position.x = THREE.Math.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
+    this.speed = MathUtils.randFloat( this.options.speed.min, this.options.speed.max ) * - 1;
+    this.mesh.position.x = MathUtils.randFloat( - this.confetti.width / 2, this.confetti.width / 2 );
     this.mesh.position.y = ( randomHeight )
-      ? THREE.Math.randFloat( this.size, this.confetti.height + this.size )
+      ? MathUtils.randFloat( this.size, this.confetti.height + this.size )
       : this.size;
 
-    this.revolutionSpeed = THREE.Math.randFloat( this.options.revolution.min, this.options.revolution.max );
+    this.revolutionSpeed = MathUtils.randFloat( this.options.revolution.min, this.options.revolution.max );
     this.revolutionAxis = [ 'x', 'y', 'z' ][ Math.floor( Math.random() * 3 ) ];
     this.mesh.rotation.set( Math.random() * Math.PI / 3, Math.random() * Math.PI / 3, Math.random() * Math.PI / 3 );
 

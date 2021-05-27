@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
   <meta charset="UTF-8">
@@ -34,7 +34,7 @@
   <link rel="shortcut icon" href="assets/icons/favicon.ico">
   <meta name="theme-color" content="#ffffff">
 
-  <link rel="stylesheet" type="text/css" href="assets/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="cube.css">
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128627708-1"></script>
@@ -117,35 +117,35 @@
     </div>
 
     <div class="ui__buttons">
-      <button class="btn btn--bl btn--stats">
+      <button class="btn btn--bl btn--stats" aria-label="statisctics">
         <icon trophy></icon>
       </button>
-      <button class="btn btn--br btn--prefs">
+      <button class="btn btn--br btn--prefs" aria-label="settings">
         <icon settings></icon>
       </button>
-      <button class="btn btn--bl btn--back">
+      <button class="btn btn--bl btn--back" aria-label="back">
         <icon back></icon>
       </button>
-      <button class="btn btn--br btn--theme">
+      <button class="btn btn--br btn--theme" aria-label="theme">
         <icon theme></icon>
       </button>
-      <button class="btn btn--br btn--reset">
+      <button class="btn btn--br btn--reset" aria-label="reset">
         <icon reset></icon>
       </button>
     </div>
 
   </div>
 
-  <script src="assets/js/three.js"></script>
-  <script src="assets/js/cube.js"></script>
+  <script src="cube.js"></script>
 
-  <script src="upup.min.js"></script>
   <script>
-    if (UpUp !== null) {
-      UpUp.start({
-        'cache-version': window.gameVersion,
-        'content-url': 'index.html',
-        'assets': [ 'assets/css/styles.css', 'assets/js/three.js', 'assets/js/cube.js' ]
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
       });
     }
   </script>

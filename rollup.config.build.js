@@ -1,14 +1,23 @@
-import minify from 'rollup-plugin-babel-minify';
+import { terser } from 'rollup-plugin-terser';
+import resolve from "@rollup/plugin-node-resolve"
+import scss from 'rollup-plugin-scss'
+import postcss from "postcss";
+import autoprefixer from "autoprefixer";
 
 export default {
   input: './src/js/Game.js',
   plugins: [
-    minify({ comments: false, sourceMap: false }),
+    resolve(),
+    scss({sourceMap: true, sass: require('sass'),
+      processor: css =>
+        postcss([autoprefixer()]),
+    }),
+    terser(),
   ],
   output: {
       format: 'iife',
-      file: './assets/js/cube.js',
+      file: './export/cube.js',
       indent: '\t',
-      sourceMap: false,
+      sourcemap: true,
   },
 };

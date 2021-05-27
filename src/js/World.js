@@ -1,3 +1,5 @@
+import {Scene, WebGLRenderer, PerspectiveCamera, MathUtils, Object3D, AmbientLight, DirectionalLight} from 'three';
+
 import { Animation } from './Animation.js';
 
 class World extends Animation {
@@ -9,13 +11,13 @@ class World extends Animation {
 		this.game = game;
 
 		this.container = this.game.dom.game;
-		this.scene = new THREE.Scene();
+		this.scene = new Scene();
 
-		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+		this.renderer = new WebGLRenderer( { antialias: true, alpha: true } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.container.appendChild( this.renderer.domElement );
 
-		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
+		this.camera = new PerspectiveCamera( 2, 1, 0.1, 10000 );
 
 		this.stage = { width: 2, height: 3 };
 		this.fov = 10;
@@ -46,7 +48,7 @@ class World extends Animation {
 	  this.camera.aspect = this.width / this.height;
 
 		const aspect = this.stage.width / this.stage.height;
-	  const fovRad = this.fov * THREE.Math.DEG2RAD;
+	  const fovRad = this.fov * MathUtils.DEG2RAD;
 
 	  let distance = ( aspect < this.camera.aspect )
 			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
@@ -71,10 +73,10 @@ class World extends Animation {
 	createLights() {
 
 		this.lights = {
-			holder:  new THREE.Object3D,
-			ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
-			front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
-			back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
+			holder:  new Object3D,
+			ambient: new AmbientLight( 0xffffff, 0.69 ),
+			front:   new DirectionalLight( 0xffffff, 0.36 ),
+			back:    new DirectionalLight( 0xffffff, 0.19 ),
 		};
 
 		this.lights.front.position.set( 1.5, 5, 3 );
