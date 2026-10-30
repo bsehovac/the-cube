@@ -1,65 +1,55 @@
-const animationEngine = ( () => {
+class AnimationEngine {
 
-  let uniqueID = 0;
+  constructor() {
 
-  class AnimationEngine {
-
-    constructor() {
-
-      this.ids = [];
-      this.animations = {};
-      this.update = this.update.bind( this );
-      this.raf = 0;
-      this.time = 0;
-
-    }
-
-    update() {
-
-      const now = performance.now();
-      const delta = now - this.time
-      this.time = now;
-
-      let i = this.ids.length;
-
-      this.raf = i ? requestAnimationFrame( this.update ) : 0;
-
-      while ( i-- )
-        this.animations[ this.ids[ i ] ] && this.animations[ this.ids[ i ] ].update( delta );
-
-    }
-
-    add( animation ) {
-
-      animation.id = uniqueID ++;
-
-      this.ids.push( animation.id );
-      this.animations[ animation.id ] = animation;
-
-      if ( this.raf !== 0 ) return;
-
-      this.time = performance.now();
-      this.raf = requestAnimationFrame( this.update );
-
-    }
-
-    remove( animation ) {
-
-      const index = this.ids.indexOf( animation.id );
-
-      if ( index < 0 ) return;
-
-      this.ids.splice( index, 1 );
-      delete this.animations[ animation.id ];
-      animation = null;
-
-    }
+    this.animations = new Set();
+    this.update = this.update.bind( this );
+    this.raf = 0;
+    this.time = 0;
+    this.delta = 0;
+    this.maxDelta = 100;
+    this.onRender = null;
 
   }
 
-  return new AnimationEngine();
+  update( time ) {
 
-} )();
+    this.delta = Math.min( Math.max( time - this.time, 0 ), this.maxDelta );
+    this.time = time;
+
+    this.raf = ( this.animations.size > 0 || this.onRender ) ? requestAnimationFrame( this.update ) : 0;
+
+    for ( const animation of this.animations ) animation.update( this.delta, this.time );
+
+    if ( this.onRender ) this.onRender();
+
+  }
+
+  request() {
+
+    if ( this.raf !== 0 ) return;
+
+    this.time = performance.now();
+    this.raf = requestAnimationFrame( this.update );
+
+  }
+
+  add( animation ) {
+
+    this.animations.add( animation );
+    this.request();
+
+  }
+
+  remove( animation ) {
+
+    this.animations.delete( animation );
+
+  }
+
+}
+
+const animationEngine = new AnimationEngine();
 
 class Animation {
 
@@ -81,8 +71,8 @@ class Animation {
 
   }
 
-  update( delta ) {}
+  update( delta, time ) {}
 
 }
 
-export { Animation };
+export { Animation, animationEngine };

@@ -108,7 +108,6 @@ class ConfettiStage extends Animation {
 
   start() {
 
-    this.time = performance.now();
     this.playing = true;
 
     let i = this.count;
@@ -134,11 +133,7 @@ class ConfettiStage extends Animation {
 
   }
 
-  update() {
-
-    const now = performance.now();
-    const delta = now - this.time;
-    this.time = now;
+  update( delta ) {
 
     let i = this.count;
 
@@ -217,7 +212,7 @@ class Particle {
   update( delta ) {
 
     this.mesh.position.y += this.speed * delta;
-    this.mesh.rotation[ this.revolutionAxis ] += this.revolutionSpeed;
+    this.mesh.rotation[ this.revolutionAxis ] += this.revolutionSpeed * delta / ( 1000 / 60 );
 
     if ( this.mesh.position.y < - this.confetti.height - this.size )
       ( this.confetti.playing ) ? this.reset( false ) : this.stop();

@@ -1,4 +1,5 @@
 import { World } from './World.js';
+import { Background } from './Background.js';
 import { Cube } from './Cube.js';
 import { Controls } from './Controls.js';
 import { Scrambler } from './Scrambler.js';
@@ -47,7 +48,6 @@ class Game {
     this.dom = {
       ui: document.querySelector( '.ui' ),
       game: document.querySelector( '.ui__game' ),
-      back: document.querySelector( '.ui__background' ),
       prefs: document.querySelector( '.ui__prefs' ),
       theme: document.querySelector( '.ui__theme' ),
       stats: document.querySelector( '.ui__stats' ),
@@ -69,6 +69,7 @@ class Game {
     };
 
     this.world = new World( this );
+    this.background = new Background( this );
     this.cube = new Cube( this );
     this.controls = new Controls( this );
     this.scrambler = new Scrambler( this );

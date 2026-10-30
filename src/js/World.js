@@ -1,22 +1,20 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
-import { Animation } from './Animation.js';
+import { animationEngine } from './Animation.js';
 
 THREE.ColorManagement.enabled = false;
 
-class World extends Animation {
+class World {
 
 	constructor( game ) {
-
-		super( true );
 
 		this.game = game;
 
 		this.container = this.game.dom.game;
 		this.scene = new THREE.Scene();
 
-		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
-		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: false } );
+		this.setPixelRatio( 1.5 );
 		this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 		this.container.appendChild( this.renderer.domElement );
 
@@ -32,13 +30,22 @@ class World extends Animation {
 		this.resize();
 		window.addEventListener( 'resize', () => this.resize(), false );
 
+		animationEngine.onRender = () => this.render();
+		animationEngine.request();
+
 	}
 
-	update() {
+	render() {
 
 		if ( this.stats ) this.stats.begin();
 		this.renderer.render( this.scene, this.camera );
 		if ( this.stats ) this.stats.end();
+
+	}
+
+	setPixelRatio( max ) {
+
+		this.renderer.setPixelRatio( Math.min( window.devicePixelRatio, max ) );
 
 	}
 

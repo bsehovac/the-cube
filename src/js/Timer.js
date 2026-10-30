@@ -7,7 +7,14 @@ class Timer extends Animation {
 		super( false );
 
 		this.game = game;
+		this.running = false;
 		this.reset();
+
+		document.addEventListener( 'visibilitychange', () => {
+
+			if ( document.hidden && this.running ) this.save();
+
+		} );
 		
 	}
 
@@ -15,8 +22,9 @@ class Timer extends Animation {
 
 		this.startTime = continueGame ? ( Date.now() - this.deltaTime ) : Date.now();
 		this.deltaTime = 0;
-		this.converted = this.convert();
+		this.convert();
 
+		this.running = true;
 		super.start();
 
 	}
@@ -35,7 +43,9 @@ class Timer extends Animation {
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
 		this.convert();
+		this.save();
 
+		this.running = false;
 		super.stop();
 
 		return { time: this.converted, millis: this.deltaTime };
@@ -44,18 +54,23 @@ class Timer extends Animation {
 
 	update() {
 
-		const old = this.converted;
+		const old = Math.floor( this.deltaTime / 1000 );
 
 		this.currentTime = Date.now();
 		this.deltaTime = this.currentTime - this.startTime;
-		this.convert();
 
-		if ( this.converted != old ) {
+		if ( Math.floor( this.deltaTime / 1000 ) != old ) {
 
-			localStorage.setItem( 'theCube_time', this.deltaTime );
+			this.convert();
 			this.setText();
 
 		}
+
+	}
+
+	save() {
+
+		localStorage.setItem( 'theCube_time', this.deltaTime );
 
 	}
 
@@ -70,7 +85,7 @@ class Timer extends Animation {
 
 	setText() {
 
-		this.game.dom.texts.timer.innerHTML = this.converted;
+		this.game.dom.texts.timer.textContent = this.converted;
 
 	}
 

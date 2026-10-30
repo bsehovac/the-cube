@@ -1,4 +1,4 @@
-import { Animation } from './Animation.js';
+import { Animation, animationEngine } from './Animation.js';
 import { Easing } from './Easing.js';
 
 class Tween extends Animation {
@@ -12,8 +12,8 @@ class Tween extends Animation {
     this.onUpdate = options.onUpdate || ( () => {} );
     this.onComplete = options.onComplete || ( () => {} );
 
-    this.delay = options.delay || false;
-    this.yoyo = options.yoyo ? false : null;
+    this.delay = options.delay || 0;
+    this.yoyo = options.yoyo === true;
 
     this.progress = 0;
     this.value = 0;
@@ -21,34 +21,43 @@ class Tween extends Animation {
 
     this.getFromTo( options );
 
-    if ( this.delay ) setTimeout( () => super.start(), this.delay );
-    else super.start();
+    super.start();
+
+    this.startTime = animationEngine.time + this.delay;
 
     this.onUpdate( this );
 
   }
 
-  update( delta ) {
+  update( delta, time ) {
 
-    const old = this.value * 1;
-    const direction = ( this.yoyo === true ) ? - 1 : 1;
+    const elapsed = time - this.startTime;
 
-    this.progress += ( delta / this.duration ) * direction;
+    if ( elapsed < 0 ) return;
 
-    this.value = this.easing( this.progress );
-    this.delta = this.value - old;
+    const old = this.value;
 
-    if ( this.values !== null ) this.updateFromTo();
+    this.progress = elapsed / this.duration;
 
-    if ( this.yoyo !== null ) this.updateYoyo();
-    else if ( this.progress <= 1 ) this.onUpdate( this );
+    if ( this.yoyo ) this.updateYoyo();
+    else if ( this.progress < 1 ) this.value = this.easing( this.progress );
     else {
 
       this.progress = 1;
       this.value = 1;
-      this.onUpdate( this );
+
+    }
+
+    this.delta = this.value - old;
+
+    if ( this.values !== null ) this.updateFromTo();
+
+    this.onUpdate( this );
+
+    if ( ! this.yoyo && this.progress === 1 ) {
+
       this.onComplete( this );
-      super.stop();      
+      super.stop();
 
     }
 
@@ -56,14 +65,12 @@ class Tween extends Animation {
 
   updateYoyo() {
 
-    if ( this.progress > 1 || this.progress < 0 ) {
+    const cycle = Math.floor( this.progress );
 
-      this.value = this.progress = ( this.progress > 1 ) ? 1 : 0;
-      this.yoyo = ! this.yoyo;
+    this.progress -= cycle;
+    if ( cycle % 2 === 1 ) this.progress = 1 - this.progress;
 
-    }
-
-    this.onUpdate( this )
+    this.value = this.easing( this.progress );
 
   }
 

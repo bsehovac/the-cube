@@ -7,7 +7,6 @@ class IconsConverter {
 			className: 'icon',
 			styles: false,
       icons: {},
-			observe: false,
 			convert: false,
 		}, options || {} );
 
@@ -20,14 +19,6 @@ class IconsConverter {
 
 		if ( options.styles ) this.addStyles();
 		if ( options.convert ) this.convertAllIcons();
-
-		if ( options.observe ) {
-
-			const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-			this.observer = new MutationObserver( mutations => { this.convertAllIcons(); } );
-			this.observer.observe( document.documentElement, { childList: true, subtree: true } );
-
-		}
 
 		return this;
 

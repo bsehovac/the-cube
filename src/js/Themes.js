@@ -85,7 +85,7 @@ class Themes {
 
     this.game.confetti.updateColors( colors );
 
-    this.game.dom.back.style.background = '#' + colors.G.toString(16).padStart(6, '0');
+    this.game.background.setColor( colors.G );
 
   }
 

@@ -1,9 +1,9 @@
 .ui
+  +inset(fixed)
   pointer-events: none
   color: #070d15
+  overflow: hidden
 
-  &,
-  &__background,
   &__game,
   &__texts,
   &__prefs,
@@ -12,16 +12,6 @@
   &__buttons
     +inset
     overflow: hidden
-
-  &__background
-    z-index: 1
-    transition: background 500ms ease
-    background: #d1d5db
-
-    &:after
-      +inset
-      content: ''
-      background-image: linear-gradient(to bottom, rgba(#fff, 1) 50%, rgba(#fff, 0) 100%)
 
   &__game
     pointer-events: all
@@ -50,3 +40,20 @@
 
   &__buttons
     z-index: 5
+
+  &__prefs,
+  &__theme,
+  &__stats,
+  &__buttons
+    top: env(safe-area-inset-top, 0px)
+    right: env(safe-area-inset-right, 0px)
+    bottom: env(safe-area-inset-bottom, 0px)
+    left: env(safe-area-inset-left, 0px)
+
+@media (display-mode: standalone), (display-mode: fullscreen)
+  html,
+  body,
+  .ui
+    bottom: auto
+    height: 100vh
+    height: 100lvh
