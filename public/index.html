@@ -136,14 +136,10 @@
 
   <script src="assets/js/cube.js"></script>
 
-  <script src="upup.min.js"></script>
   <script>
-    if (UpUp !== null) {
-      UpUp.start({
-        'cache-version': window.gameVersion,
-        'content-url': 'index.html',
-        'assets': [ 'assets/css/styles.css', 'assets/js/cube.js' ]
-      });
+    if ( 'serviceWorker' in navigator ) {
+      navigator.serviceWorker.register( 'sw.js' ).catch( () => {} );
+      caches.keys().then( keys => keys.filter( key => key.startsWith( 'upup-cache' ) ).forEach( key => caches.delete( key ) ) );
     }
   </script>
 

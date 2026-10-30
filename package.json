@@ -4,12 +4,11 @@
   "private": true,
   "description": "",
   "scripts": {
-    "dev": "rollup -c -w",
+    "dev": "rm -rf build && rollup -c -w",
     "build": "rm -rf build && rollup -c"
   },
   "dependencies": {
-    "three": "^0.187.0",
-    "upup": "^1.1.0"
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
@@ -17,7 +16,8 @@
     "rollup": "^4.66.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
-    "sass": "^1.105.2"
+    "sass": "^1.105.2",
+    "workbox-build": "^7.4.1"
   },
   "repository": {
     "type": "git",

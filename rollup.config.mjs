@@ -2,6 +2,7 @@ import { cpSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs
 import { dirname, resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as sass from 'sass';
+import { generateSW } from 'workbox-build';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import serve from 'rollup-plugin-serve';
@@ -37,19 +38,35 @@ const styles = ( input, output ) => {
   };
 };
 
+const serviceWorker = ( directory ) => ( {
+  name: 'service-worker',
+  async closeBundle() {
+    const { count, size, warnings } = await generateSW( {
+      globDirectory: directory,
+      globPatterns: [ '**/*.{html,js,css,png,svg,ico,webmanifest}' ],
+      globIgnores: [ '**/twitter-card.png', '**/meta-image.png', '**/mstile-*.png' ],
+      swDest: `${directory}/sw.js`,
+      inlineWorkboxRuntime: true,
+      sourcemap: false,
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
+      skipWaiting: true,
+    } );
+    warnings.forEach( warning => this.warn( warning ) );
+    console.log( `sw.js precaches ${count} files, ${( size / 1024 ).toFixed( 0 )} kB` );
+  },
+} );
+
 export default {
   input: 'src/js/Game.js',
   plugins: [
     resolve(),
     copy( [
       [ 'public', 'build' ],
-      [ 'node_modules/upup/dist/upup.min.js', 'build/upup.min.js' ],
-      [ 'node_modules/upup/dist/upup.min.js.map', 'build/upup.min.js.map' ],
-      [ 'node_modules/upup/dist/upup.sw.min.js', 'build/upup.sw.min.js' ],
-      [ 'node_modules/upup/dist/upup.sw.min.js.map', 'build/upup.sw.min.js.map' ],
     ] ),
     styles( 'src/scss/styles.sass', 'build/assets/css/styles.css' ),
     production && terser( { format: { comments: false } } ),
+    production && serviceWorker( 'build' ),
     ! production && serve( { contentBase: 'build', port: 3000, open: true } ),
     ! production && livereload( { watch: 'build' } ),
   ],
