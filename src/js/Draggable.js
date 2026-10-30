@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 window.addEventListener( 'touchmove', () => {} );
 document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
 

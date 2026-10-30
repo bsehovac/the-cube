@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 class Storage {
 
   constructor( game ) {
@@ -64,7 +66,7 @@ class Storage {
 
       gameCubeData.names.push( piece.name );
       gameCubeData.positions.push( piece.position );
-      gameCubeData.rotations.push( piece.rotation.toVector3() );
+      gameCubeData.rotations.push( new THREE.Vector3().setFromEuler( piece.rotation ) );
 
     } );
 

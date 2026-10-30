@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 function RoundedPlaneGeometry( size, radius, depth ) {
 
   var x, y, width, height;
@@ -18,7 +20,7 @@ function RoundedPlaneGeometry( size, radius, depth ) {
   shape.lineTo( x + radius, y );
   shape.quadraticCurveTo( x, y, x, y + radius );
 
-  const geometry = new THREE.ExtrudeBufferGeometry(
+  const geometry = new THREE.ExtrudeGeometry(
     shape,
     { depth: depth, bevelEnabled: false, curveSegments: 3 }
   );

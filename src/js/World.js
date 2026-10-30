@@ -1,4 +1,8 @@
+import * as THREE from 'three';
+import Stats from 'three/addons/libs/stats.module.js';
 import { Animation } from './Animation.js';
+
+THREE.ColorManagement.enabled = false;
 
 class World extends Animation {
 
@@ -13,6 +17,7 @@ class World extends Animation {
 
 		this.renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
+		this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 		this.container.appendChild( this.renderer.domElement );
 
 		this.camera = new THREE.PerspectiveCamera( 2, 1, 0.1, 10000 );
@@ -31,7 +36,25 @@ class World extends Animation {
 
 	update() {
 
+		if ( this.stats ) this.stats.begin();
 		this.renderer.render( this.scene, this.camera );
+		if ( this.stats ) this.stats.end();
+
+	}
+
+	fps( show ) {
+
+		if ( show && ! this.stats ) {
+
+			this.stats = new Stats();
+			document.body.appendChild( this.stats.dom );
+
+		} else if ( ! show && this.stats ) {
+
+			this.stats.dom.remove();
+			this.stats = null;
+
+		}
 
 	}
 
@@ -46,7 +69,7 @@ class World extends Animation {
 	  this.camera.aspect = this.width / this.height;
 
 		const aspect = this.stage.width / this.stage.height;
-	  const fovRad = this.fov * THREE.Math.DEG2RAD;
+	  const fovRad = this.fov * THREE.MathUtils.DEG2RAD;
 
 	  let distance = ( aspect < this.camera.aspect )
 			? ( this.stage.height / 2 ) / Math.tan( fovRad / 2 )
@@ -72,9 +95,9 @@ class World extends Animation {
 
 		this.lights = {
 			holder:  new THREE.Object3D,
-			ambient: new THREE.AmbientLight( 0xffffff, 0.69 ),
-			front:   new THREE.DirectionalLight( 0xffffff, 0.36 ),
-			back:    new THREE.DirectionalLight( 0xffffff, 0.19 ),
+			ambient: new THREE.AmbientLight( 0xffffff, 0.69 * Math.PI ),
+			front:   new THREE.DirectionalLight( 0xffffff, 0.36 * Math.PI ),
+			back:    new THREE.DirectionalLight( 0xffffff, 0.19 * Math.PI ),
 		};
 
 		this.lights.front.position.set( 1.5, 5, 3 );

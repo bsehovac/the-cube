@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Tween, Easing } from './Tween.js';
 
 class ThemeEditor {
