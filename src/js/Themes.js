@@ -4,6 +4,7 @@ class Themes {
 
     this.game = game;
     this.theme = null;
+    this.themeColor = document.querySelector( 'meta[name="theme-color"]' );
 
     this.defaults = {
       cube: {
@@ -86,6 +87,8 @@ class Themes {
     this.game.confetti.updateColors( colors );
 
     this.game.background.setColor( colors.G );
+
+    this.themeColor.content = '#' + colors.G.toString( 16 ).padStart( 6, '0' );
 
   }
 

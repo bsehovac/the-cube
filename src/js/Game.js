@@ -12,7 +12,6 @@ import { Storage } from './Storage.js';
 import { Themes } from './Themes.js';
 import { ThemeEditor } from './ThemeEditor.js';
 import { States } from './States.js';
-// import { Keyboard } from './Keyboard.js';
 
 import { Icons } from './Icons.js';
 
@@ -38,9 +37,6 @@ const BUTTONS = {
 const SHOW = true;
 const HIDE = false;
 
-const FAST = true;
-const SLOW = false;
-
 class Game {
 
   constructor() {
@@ -58,6 +54,7 @@ class Game {
         complete: document.querySelector( '.text--complete' ),
         best: document.querySelector( '.text--best-time' ),
         theme: document.querySelector( '.text--theme' ),
+        status: document.querySelector( '.ui__texts [role="status"]' ),
       },
       buttons: {
         prefs: document.querySelector( '.btn--prefs' ),
@@ -111,6 +108,9 @@ class Game {
   initActions() {
 
     let tappedTwice = false;
+
+    document.addEventListener( 'keydown', () => this.dom.ui.classList.add( 'is-keyboard' ), true );
+    document.addEventListener( 'pointerdown', () => this.dom.ui.classList.remove( 'is-keyboard' ), true );
 
     this.dom.game.addEventListener( 'click', event => {
 
@@ -385,12 +385,17 @@ class Game {
         this.transition.complete( SHOW, this.bestTime )
         this.confetti.start();
 
+        this.dom.texts.status.textContent =
+          ( this.bestTime ? 'Best time! ' : 'Complete! ' ) + this.timer.converted;
+
       }, 1000 );
 
     } else {
 
       this.state = STATE.Stats;
       this.saved = false;
+
+      this.dom.texts.status.textContent = '';
 
       this.transition.timer( HIDE );
       this.transition.complete( HIDE, this.bestTime );

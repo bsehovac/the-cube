@@ -43,8 +43,8 @@ const serviceWorker = ( directory ) => ( {
   async closeBundle() {
     const { count, size, warnings } = await generateSW( {
       globDirectory: directory,
-      globPatterns: [ '**/*.{html,js,css,png,svg,ico,webmanifest}' ],
-      globIgnores: [ '**/twitter-card.png', '**/meta-image.png', '**/mstile-*.png' ],
+      globPatterns: [ '**/*.{html,js,css,png,ico,webmanifest}' ],
+      globIgnores: [ '**/twitter-card.png', '**/meta-image.png' ],
       swDest: `${directory}/sw.js`,
       inlineWorkboxRuntime: true,
       sourcemap: false,

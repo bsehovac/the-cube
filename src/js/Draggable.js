@@ -41,7 +41,7 @@ class Draggable {
 
         this.touch = ( event.type == 'touchstart' );
 
-        this.onDragStart( this.position );
+        this.onDragStart( this.position, event );
 
         window.addEventListener( ( this.touch ) ? 'touchmove' : 'mousemove', this.drag.move, false );
         window.addEventListener( ( this.touch ) ? 'touchend' : 'mouseup', this.drag.end, false );

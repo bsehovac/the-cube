@@ -19,11 +19,20 @@
     height: 1em
     margin-left: 0.5em
     margin-right: 0.5em
+    cursor: pointer
     z-index: 3
+
+    &:before
+      content: ''
+      position: absolute
+      top: -0.45em
+      bottom: -0.25em
+      left: -0.5em
+      right: -0.5em
 
     &-line
       position: absolute
-      background: rgba(#000, 0.2)
+      background: $line
       height: 2px
       top: 50%
       margin-top: -1px
@@ -41,7 +50,9 @@
     z-index: 1
 
     div
-      transition: background 500ms ease
+      transition: background 500ms ease, outline-color 250ms $easeOutQuart, outline-offset 250ms $easeOutQuart, transform 250ms $easeOutQuart
+      outline: 2px solid rgba($focus, 0)
+      outline-offset: 0.1em
       position: absolute
       left: 0
       top: 0
@@ -50,31 +61,52 @@
       border-radius: 0.2em
       margin-left: -0.45em
       margin-top: -0.45em
-      background: #41aac8
-      border-bottom: 2px solid rgba(#000, 0.2)
+      background: $accent
+      border-bottom: 2px solid $line
 
-      .range.is-active &
-        transform: scale(1.25)
+      .range__track[data-drag] &
+        transform: scale(1.1)
+
+    @media (hover: hover)
+      &:hover div
+        transform: scale(1.1)
+
+    .is-keyboard &:focus div
+      outline-color: $focus
+      outline-offset: 0.2em
 
     &:after
       content: ''
       position: absolute
-      left: 0
-      top: 0
-      width: 3em
-      height: 3em
-      margin-left: -1.5em
-      margin-top: -1.5em
+      left: -1em
+      top: -0.75em
+      width: 2em
+      height: 1.5em
 
   &__list
-    display: flex
-    flex-flow: row nowrap
-    justify-content: space-between
+    display: grid
+    grid-auto-columns: 0
     position: relative
-    padding-top: 0.5em
+    padding: 0.5em calc(0.5em / 0.55) 0
     font-size: 0.55em
-    color: rgba(#000, 0.5)
+    color: $secondary
     z-index: 1
+
+    > div
+      grid-row: 1
+      position: relative
+      display: flex
+      justify-content: center
+      width: 0
+      white-space: nowrap
+
+      &:first-child
+        justify-content: flex-start
+        left: calc(-0.5em / 0.55)
+
+      &:last-child
+        justify-content: flex-end
+        left: calc(0.5em / 0.55)
 
   &--type
     &-color

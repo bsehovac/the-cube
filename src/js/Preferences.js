@@ -32,6 +32,8 @@ class Preferences {
 
           } );
 
+          this.game.preferences.ranges.scramble.setHandlePosition();
+
         },
         onComplete: () => this.game.storage.savePreferences(),
       } ),

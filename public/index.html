@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
   <meta charset="UTF-8">
@@ -8,17 +8,23 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover">
 
   <title>The Cube - A Rubik's Cube Game</title>
+  <link rel="canonical" href="https://bsehovac.github.io/the-cube/">
+
   <meta property="og:description" content="See if you can solve this classic puzzle game."/>
-  <meta property="og:image" content="assets/icons/meta-image.png"/>
+  <meta property="og:image" content="https://bsehovac.github.io/the-cube/assets/icons/meta-image.png"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="A 3D Rubik's Cube"/>
   <meta property="og:site_name" content="The Cube - A Rubik's Cube Game"/>
   <meta property="og:title" content="The Cube - A Rubik's Cube Game"/>
   <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://bsehovac.github.io"/>
+  <meta property="og:url" content="https://bsehovac.github.io/the-cube/"/>
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:creator" content="@BorisSehovac">
   <meta name="twitter:title" content="The Cube - A Rubik's Cube Game">
   <meta name="twitter:image" content="https://bsehovac.github.io/the-cube/assets/icons/twitter-card.png">
+  <meta name="twitter:image:alt" content="A 3D Rubik's Cube">
   <meta name="twitter:description" content="See if you can solve this classic puzzle game.">
 
   <meta name="mobile-web-app-capable" content="yes">
@@ -26,28 +32,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="assets/icons/site.webmanifest">
-  <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#5bbad5">
-  <link rel="shortcut icon" href="assets/icons/favicon.ico">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#d1d5db">
 
-  <link rel="stylesheet" type="text/css" href="assets/css/styles.css">
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128627708-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-128627708-1');
-  </script>
-
-  <script>
-    window.gameVersion = '0.99.2';
-  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
 
 </head>
 <body>
@@ -57,9 +49,9 @@
     <div class="ui__game"></div>
 
     <div class="ui__texts">
-      <h1 class="text text--title">
-        <span>THE</span>
-        <span>CUBE</span>
+      <h1 class="text text--title" aria-label="The Cube">
+        <span aria-hidden="true">THE</span>
+        <span aria-hidden="true">CUBE</span>
       </h1>
       <div class="text text--note">
         Double tap to start
@@ -67,30 +59,31 @@
       <div class="text text--timer">
         0:00
       </div>
-      <div class="text text--complete">
+      <div class="text text--complete" aria-hidden="true">
         <span>Complete!</span>
       </div>
-      <div class="text text--best-time">
+      <div class="text text--best-time" aria-hidden="true">
         <icon trophy></icon>
         <span>Best Time!</span>
       </div>
+      <div class="sr-only" role="status"></div>
     </div>
 
-    <div class="ui__prefs">
+    <div class="ui__prefs" inert>
       <range name="size" title="Cube Size" list="2,3,4,5"></range>
-      <range name="flip" title="Flip Type" list="Swift&nbsp;,Smooth,Bounce"></range>
+      <range name="flip" title="Flip Type" list="Swift,Smooth,Bounce"></range>
       <range name="scramble" title="Scramble Length" list="20,25,30"></range>
-      <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
+      <range name="fov" title="Camera Angle" list="Orthographic,Perspective"></range>
       <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
     </div>
 
-    <div class="ui__theme">
+    <div class="ui__theme" inert>
       <range name="hue" title="Hue" color></range>
       <range name="saturation" title="Saturation" color></range>
       <range name="lightness" title="Lightness" color></range>
     </div>
 
-    <div class="ui__stats">
+    <div class="ui__stats" inert>
       <div class="stats" name="cube-size">
         <i>Cube:</i><b>3x3x3</b>
       </div>
@@ -115,19 +108,19 @@
     </div>
 
     <div class="ui__buttons">
-      <button class="btn btn--bl btn--stats">
+      <button class="btn btn--bl btn--stats" aria-label="Statistics" tabindex="0" inert>
         <icon trophy></icon>
       </button>
-      <button class="btn btn--br btn--prefs">
+      <button class="btn btn--br btn--prefs" aria-label="Settings" tabindex="0" inert>
         <icon settings></icon>
       </button>
-      <button class="btn btn--bl btn--back">
+      <button class="btn btn--bl btn--back" aria-label="Back" tabindex="0" inert>
         <icon back></icon>
       </button>
-      <button class="btn btn--br btn--theme">
+      <button class="btn btn--br btn--theme" aria-label="Edit colors" tabindex="0" inert>
         <icon theme></icon>
       </button>
-      <button class="btn btn--br btn--reset">
+      <button class="btn btn--br btn--reset" aria-label="Reset colors" tabindex="0" inert>
         <icon reset></icon>
       </button>
     </div>
@@ -138,8 +131,18 @@
 
   <script>
     if ( 'serviceWorker' in navigator ) {
-      navigator.serviceWorker.register( 'sw.js' ).catch( () => {} );
-      caches.keys().then( keys => keys.filter( key => key.startsWith( 'upup-cache' ) ).forEach( key => caches.delete( key ) ) );
+      if ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) {
+        navigator.serviceWorker.getRegistrations().then( registrations => registrations.forEach( registration => registration.unregister() ) );
+        caches.keys().then( keys => keys.forEach( key => caches.delete( key ) ) );
+      } else {
+        const controller = navigator.serviceWorker.controller;
+        const updating = controller !== null && controller.scriptURL.endsWith( '/sw.js' );
+        navigator.serviceWorker.addEventListener( 'controllerchange', () => {
+          if ( updating && window.game && window.game.state === 0 ) location.reload();
+        } );
+        navigator.serviceWorker.register( 'sw.js' ).catch( () => {} );
+        caches.keys().then( keys => keys.filter( key => key.startsWith( 'upup-cache' ) ).forEach( key => caches.delete( key ) ) );
+      }
     }
   </script>
 

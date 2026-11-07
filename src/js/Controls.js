@@ -7,6 +7,15 @@ const PREPARING = 1;
 const ROTATING = 2;
 const ANIMATING = 3;
 
+const FACES = {
+  R: [ 'x', 1 ],
+  L: [ 'x', - 1 ],
+  U: [ 'y', 1 ],
+  D: [ 'y', - 1 ],
+  F: [ 'z', 1 ],
+  B: [ 'z', - 1 ],
+};
+
 class Controls {
 
   constructor( game ) {
@@ -238,12 +247,12 @@ class Controls {
 
   }
 
-  rotateLayer( rotation, scramble, callback ) {
+  rotateLayer( rotation, scramble, callback, fast = false ) {
 
-    const config = scramble ? 0 : this.flipConfig;
+    const config = ( scramble || fast ) ? 0 : this.flipConfig;
 
     const easing = this.flipEasings[ config ];
-    const duration = this.flipSpeeds[ config ]
+    const duration = this.flipSpeeds[ config ] * ( fast ? 0.5 : 1 );
     const bounce = ( config == 2 ) ? this.bounceCube() : ( () => {} );
 
     this.rotationTween = new Tween( {
@@ -296,11 +305,11 @@ class Controls {
 
   }
 
-  rotateCube( rotation, callback ) {
+  rotateCube( rotation, callback, fast = false ) {
 
-    const config = this.flipConfig;
+    const config = fast ? 0 : this.flipConfig;
     const easing = [ Easing.Power.Out( 4 ), Easing.Sine.Out(), Easing.Back.Out( 2 ) ][ config ];
-    const duration = [ 100, 150, 350 ][ config ]
+    const duration = [ 100, 150, 350 ][ config ] * ( fast ? 0.5 : 1 );
 
     this.rotationTween = new Tween( {
       easing: easing,
@@ -387,41 +396,64 @@ class Controls {
 
   }
 
-  keyboardMove( type, move, callback ) {
+  keyboardMove( face, from, to, direction, fast, callback ) {
 
-    if ( this.state !== STILL ) return;
-    if ( this.enabled !== true ) return;
+    if ( this.state !== STILL ) return false;
+    if ( this.enabled !== true ) return false;
+    if ( this.scramble !== null ) return false;
 
-    if ( type === 'LAYER' ) {
+    const size = this.game.cube.size;
+    const angle = - direction * Math.PI / 2;
+    const normal = new THREE.Vector3();
 
-      const layer = this.getLayer( move.position );
+    normal[ FACES[ face ][ 0 ] ] = FACES[ face ][ 1 ];
 
-      this.flipAxis = new THREE.Vector3();
-      this.flipAxis[ move.axis ] = 1;
-      this.state = ROTATING;
+    this.state = ROTATING;
 
-      this.selectLayer( layer );
-      this.rotateLayer( move.angle, false, layer => {
+    if ( from === 1 && to >= size ) {
 
-        this.game.storage.saveGame();
-        this.state = STILL;
-        this.checkIsSolved();
+      this.flipAxis = normal;
 
-      } );
-
-    } else if ( type === 'CUBE' ) {
-
-      this.flipAxis = new THREE.Vector3();
-      this.flipAxis[ move.axis ] = 1;
-      this.state = ROTATING;
-
-      this.rotateCube( move.angle, () => {
+      this.rotateCube( angle, () => {
 
         this.state = STILL;
+        callback();
 
-      } );
+      }, fast );
+
+      return true;
 
     }
+
+    const local = normal.applyQuaternion( this.game.cube.object.quaternion.clone().invert() ).round();
+    const axis = this.getMainAxis( local );
+    const positive = local[ axis ] > 0;
+    const offset = ( size - 1 ) / 2;
+    const pieces = this.game.cube.pieces;
+    const layer = [];
+
+    for ( let i = 0; i < pieces.length; i ++ ) {
+
+      const index = Math.round( pieces[ i ].position[ axis ] * 3 + offset );
+      const depth = positive ? size - index : index + 1;
+
+      if ( depth >= from && depth <= to ) layer.push( pieces[ i ].name );
+
+    }
+
+    this.flipAxis = local;
+
+    this.selectLayer( layer );
+    this.rotateLayer( angle, false, () => {
+
+      this.game.storage.saveGame();
+      this.state = STILL;
+      this.checkIsSolved();
+      callback();
+
+    }, fast );
+
+    return true;
 
   }
 

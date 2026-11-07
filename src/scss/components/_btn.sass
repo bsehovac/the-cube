@@ -3,13 +3,17 @@
   -moz-appearance: none
   appearance: none
   background-color: transparent
-  border-radius: 0
+  border-radius: 0.2em
   border-width: 0
   position: absolute
   pointer-events: none
   font-size: 1.2em
-  color: rgba(#000, 0.25)
+  color: $muted
   opacity: 0
+  outline: 2px solid rgba($focus, 0)
+  outline-offset: 0.1em
+  cursor: pointer
+  transition: color 250ms $easeOutQuart, outline-color 250ms $easeOutQuart, outline-offset 250ms $easeOutQuart
 
   &:after
     position: absolute
@@ -42,5 +46,18 @@
     bottom: 0.8em
     left: calc(50% - 0.5em)
 
-  svg 
+  @media (hover: hover)
+    &:hover
+      color: $secondary
+
+      svg
+        transform: scale(1.05)
+
+  .is-keyboard &:focus
+    color: $secondary
+    outline-color: $focus
+    outline-offset: 0.2em
+
+  svg
     display: block
+    transition: transform 250ms $easeOutQuart

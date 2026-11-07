@@ -59,15 +59,27 @@ class Transition {
 
     }
 
-    hide.forEach( button =>
-      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false )
-    );
+    const refocus = hide.some( button => this.game.dom.buttons[ button ] === document.activeElement );
 
-    setTimeout( () => show.forEach( button => {
+    hide.forEach( button => {
 
-      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true )
+      this.game.dom.buttons[ button ].inert = true;
+      this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], false );
 
-    } ), hide ? 500 : 0 );
+    } );
+
+    setTimeout( () => {
+
+      show.forEach( button => {
+
+        this.game.dom.buttons[ button ].inert = false;
+        this.tweens.buttons[ button ] = buttonTween( this.game.dom.buttons[ button ], true );
+
+      } );
+
+      if ( refocus && show.length > 0 ) this.game.dom.buttons[ show[ 0 ] ].focus( { preventScroll: true } );
+
+    }, hide ? 500 : 0 );
 
   }
 
@@ -222,6 +234,8 @@ class Transition {
 
     if ( show ) this.game.scores.calcStats();
 
+    this.game.dom.stats.inert = ! show;
+
     this.activeTransitions++;
 
     this.tweens.stats.forEach( tween => { tween.stop(); tween = null; } );
@@ -260,12 +274,14 @@ class Transition {
 
   preferences( show ) {
 
+    this.game.dom.prefs.inert = ! show;
     this.ranges( this.game.dom.prefs.querySelectorAll( '.range' ), 'prefs', show );
 
   }
 
   theming( show ) {
 
+    this.game.dom.theme.inert = ! show;
     this.ranges( this.game.dom.theme.querySelectorAll( '.range' ), 'prefs', show );
 
   }
@@ -293,7 +309,7 @@ class Transition {
       label.style.opacity = show ? 0 : 1;
       track.style.opacity = show ? 0 : 1;
       handle.style.opacity = show ? 0 : 1;
-      handle.style.pointerEvents = show ? 'all' : 'none';
+      range.style.pointerEvents = show ? 'all' : 'none';
 
       this.tweens[ type ][ tweenId++ ] = new Tween( {
         delay: show ? delay : delay,

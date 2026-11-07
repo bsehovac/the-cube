@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Tween, Easing } from './Tween.js';
 
+const NAMES = { U: 'White', D: 'Yellow', F: 'Red', R: 'Blue', B: 'Orange', L: 'Green', P: 'Piece', G: 'Background' };
+
 class ThemeEditor {
 
   constructor( game ) {
@@ -31,6 +33,12 @@ class ThemeEditor {
 
     const { h, s, l } = hsl.getHSL( hsl );
     const { hue, saturation, lightness } = this.game.preferences.ranges;
+
+    const name = NAMES[ this.editColor ];
+
+    [ hue, saturation, lightness ].forEach( range =>
+      range.handle.setAttribute( 'aria-label', range.element.querySelector( '.range__label' ).firstChild.textContent + ', ' + name )
+    );
 
     if ( animate ) {
 

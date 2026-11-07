@@ -16,6 +16,7 @@ class IconsConverter {
 
 		this.svgTag = document.createElementNS( 'http://www.w3.org/2000/svg', 'svg' );
 		this.svgTag.setAttribute( 'class', this.className );
+		this.svgTag.setAttribute( 'aria-hidden', 'true' );
 
 		if ( options.styles ) this.addStyles();
 		if ( options.convert ) this.convertAllIcons();

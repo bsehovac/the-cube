@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+const DATA_VERSION = '0.99.2';
+
 class Storage {
 
   constructor( game ) {
@@ -8,12 +10,12 @@ class Storage {
 
     const userVersion = localStorage.getItem( 'theCube_version' );
 
-    if ( ! userVersion || userVersion !== window.gameVersion ) {
+    if ( ! userVersion || userVersion !== DATA_VERSION ) {
 
       this.clearGame();
       this.clearPreferences();
       this.migrateScores();
-      localStorage.setItem( 'theCube_version', window.gameVersion );
+      localStorage.setItem( 'theCube_version', DATA_VERSION );
 
     }
 
